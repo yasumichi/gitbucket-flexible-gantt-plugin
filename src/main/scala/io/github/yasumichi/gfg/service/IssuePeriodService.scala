@@ -51,6 +51,15 @@ trait IssuePeriodService {
     with WebHookService
     with WritableUsersAuthenticator =>
   import gitbucket.core.service.IssuesService._
+  import self.profile.api
+
+  def getIssuePeriod(
+      userName: String,
+      repositoryName: String,
+      issueId: Int
+  )(implicit session: Session): List[IssuePeriod] = {
+    IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId).list
+  }
 
   def getIssuePeriods(
       userName: String,
