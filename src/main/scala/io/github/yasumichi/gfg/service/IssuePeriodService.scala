@@ -4,6 +4,7 @@ import io.github.yasumichi.gfg.model.IssuePeriod
 import io.github.yasumichi.gfg.model.Profile._
 import io.github.yasumichi.gfg.model.Profile.profile.blockingApi._
 import java.util.Date
+import java.util.Calendar
 import gitbucket.core.issues.html.issue
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -28,9 +29,11 @@ import gitbucket.core.service.WebHookPullRequestReviewCommentService
 import gitbucket.core.service.WebHookPullRequestService
 import gitbucket.core.service.WebHookService
 import gitbucket.core.util.WritableUsersAuthenticator
+import gitbucket.core.model.CoreProfile
 
 trait IssuePeriodService {
-  self: AccountService
+  self: CoreProfile
+    with AccountService
     with IssueComponent
     with ActivityService
     with CommitsService
@@ -81,17 +84,29 @@ trait IssuePeriodService {
       endDate: Date,
       progress: Int,
       dependencies: String
-  )(implicit session: Session): Int =
+  )(implicit session: Session): Int = {
+    val calendar = Calendar.getInstance()
+    calendar.setTime(endDate)
+    calendar.add(Calendar.DATE, 1)
+    val endDatePlus = calendar.getTime()
 
-    IssuePeriods.insert(
-      IssuePeriod(
-        userName = userName,
-        repositoryName = repositoryName,
-        issueId = issueId,
-        startDate = startDate,
-        endDate = endDate,
-        progress = progress,
-        dependencies = dependencies
+    if (getIssuePeriod(userName, repositoryName, issueId).isEmpty)
+    {
+      IssuePeriods.insert(
+        IssuePeriod(
+          userName = userName,
+          repositoryName = repositoryName,
+          issueId = issueId,
+          startDate = startDate,
+          endDate = endDatePlus,
+          progress = progress,
+          dependencies = dependencies
+        )
       )
-    )
+    } else {
+      IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId)
+      .map ( t => (t.startDate, t.endDate, t.progress, t.dependencies) )
+      .update((startDate, endDatePlus, progress, dependencies))
+    }
+  }
 }
