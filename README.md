@@ -16,3 +16,12 @@ Powered by [Frappe Gantt](https://github.com/frappe/gantt)
 - Clicking on a task will open the corresponding issue.
 
 <img width="1088" height="568" alt="image" src="https://github.com/user-attachments/assets/c8833b09-8651-4304-9e4a-57e57b38f43b" />
+
+## ToDo
+
+- [ ] Write comments seriously
+- [ ] Properly notify users during registration
+- [ ] Enable setting changes for holidays, etc.
+- [ ] Add input assistance for dependent issues
+- [ ] Enable new issue creation from the Gantt chart screen
+- [ ] Enable filtering by labels and milestones
