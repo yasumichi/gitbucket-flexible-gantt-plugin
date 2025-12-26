@@ -68,7 +68,7 @@ trait IssuePeriodService {
       userName: String,
       repositoryName: String
   )(implicit session: Session): List[(io.github.yasumichi.gfg.model.IssuePeriod, gitbucket.core.model.Issue)] = {
-    IssuePeriods
+    IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName)
       .join(Issues)
       .on { case (t1: IssuePeriods, t2: Issues) =>
         t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId
