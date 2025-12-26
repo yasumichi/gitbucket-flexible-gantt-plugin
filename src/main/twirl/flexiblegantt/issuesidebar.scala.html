@@ -1,0 +1,77 @@
+@(
+    owner: String,
+    repositoryName: String,
+    issueId: Int,
+    isEditable: Boolean
+)(implicit context: gitbucket.core.controller.Context)
+@import context._
+@import gitbucket.core.html.main
+@import gitbucket.core.admin.html.menu
+@import gitbucket.core.helper.html.information
+@import gitbucket.core.view.helpers._
+@import gitbucket.core.util.Directory._
+<hr>
+<div class="panel panel-default">
+    <div class="panel-heading"><i class="menu-icon octicon octicon-dashboard"></i>Flexible Gantt @isEditable</div>
+    <div class="panel-body">
+        <form method="post" id="gfgform" action="@context.path/@owner/@repositoryName/issues/@issueId/period">
+            <div style="margin-bottom: 14px;">
+                <span class="muted small strong">Start</span>
+                <div class="pull-right"><input type="date" name="startDate" class="form-control input-sm custom-field-editor"></div>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <span class="muted small strong">End</span>
+                <div class="pull-right"><input type="date" name="endDate" class="form-control input-sm custom-field-editor"></div>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <span class="muted small strong">Progress</span>
+                <div class="pull-right">
+                    <select class="form-control input-sm custom-field-editor" name="progress">
+                        <option>0</option>
+                        <option>10</option>
+                        <option>20</option>
+                        <option>30</option>
+                        <option>40</option>
+                        <option>50</option>
+                        <option>60</option>
+                        <option>70</option>
+                        <option>80</option>
+                        <option>90</option>
+                        <option>100</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <span class="muted small strong">Dependencies</span>
+                <div class="pull-right"><input type="text" name="dependencies" maxlength="100"></div>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <div class="pull-right">
+                    <button class="btn btn-default btn-sm strong" id="gfgpost" type="button">Set</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    document.getElementById("gfgpost").addEventListener('click', (e) => {
+        const form = document.getElementById("gfgform")
+        const params = new URLSearchParams();
+        params.append("startDate", document.querySelector("input[name='startDate']").value)
+        params.append("endDate", document.querySelector("input[name='endDate']").value)
+        params.append("progress", document.querySelector("select[name='progress']").value)
+        params.append("dependencies", document.querySelector("input[name='dependencies']").value)
+        const action = form.getAttribute("action")
+        const options = {
+            method: 'POST',
+            body: params
+        }
+        fetch(action, options).then((e) => {
+            if(e.status === 200) {
+                console.log(e)
+                return
+            }
+            console.log(e)
+        })
+    })
+</script>

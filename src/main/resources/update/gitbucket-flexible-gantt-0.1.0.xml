@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeSet>
+    <!--================================================================================================-->
+    <!-- ISSUE_PERIOD -->
+    <!--================================================================================================-->
+    <createTable tableName="ISSUE_PERIOD">
+        <column name="USER_NAME"        type="varchar(100)" nullable="false"/>
+        <column name="REPOSITORY_NAME"  type="varchar(100)" nullable="false"/>
+        <column name="ISSUE_ID"         type="int"          nullable="false"/>
+        <column name="START_DATE"       type="datetime"     nullable="false"/>
+        <column name="END_DATE"         type="datetime"     nullable="false"/>
+        <column name="PROGRESS"         type="int"          nullable="false"/>
+        <column name="DEPENDENCIES"     type="varchar(100)" nullable="false"/>
+    </createTable>
+
+    <addPrimaryKey
+            constraintName="IDX_ISSUE_PERIOD_PK"
+            tableName="ISSUE_PERIOD"
+            columnNames="USER_NAME, REPOSITORY_NAME, ISSUE_ID"/>
+    <addForeignKeyConstraint
+            constraintName="IDX_ISSUE_PERIOD_FK0"
+            baseTableName="ISSUE_PERIOD"
+            baseColumnNames="USER_NAME, REPOSITORY_NAME, ISSUE_ID"
+            referencedTableName="ISSUE"
+            referencedColumnNames="USER_NAME, REPOSITORY_NAME, ISSUE_ID"/>
+</changeSet>
