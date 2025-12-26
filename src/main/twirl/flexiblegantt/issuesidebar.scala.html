@@ -17,11 +17,11 @@
         <form method="post" id="gfgform" action="@context.path/@owner/@repositoryName/issues/@issueId/period">
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Start</span>
-                <div class="pull-right"><input type="date" name="startDate" class="form-control input-sm custom-field-editor"></div>
+                <div class="pull-right"><input type="date" name="startDate" class="form-control input-sm custom-field-editor" value=""></div>
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">End</span>
-                <div class="pull-right"><input type="date" name="endDate" class="form-control input-sm custom-field-editor"></div>
+                <div class="pull-right"><input type="date" name="endDate" class="form-control input-sm custom-field-editor" value=""></div>
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Progress</span>
@@ -43,7 +43,7 @@
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Dependencies</span>
-                <div class="pull-right"><input type="text" name="dependencies" maxlength="100"></div>
+                <div class="pull-right"><input type="text" name="dependencies" maxlength="100" value=""></div>
             </div>
             <div style="margin-bottom: 14px;">
                 <div class="pull-right">
@@ -72,6 +72,25 @@
                 return
             }
             console.log(e)
+        })
+    })
+    document.addEventListener('DOMContentLoaded', (e) => {
+        const url = "@context.path/@owner/@repositoryName/flexible-gantt/issues/@issueId"
+        fetch(url)
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .then(data =>{
+            if (data.period.length == 0) return;
+            var period = data.period[0];
+            document.querySelector("input[name='startDate']").value = (new Date(Date.parse(period.startDate)))
+                .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
+            document.querySelector("input[name='endDate']").value =  (new Date(Date.parse(period.endDate)))
+                .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
+            document.querySelector("select[name='progress']").value = period.progress;
+            document.querySelector("input[name='dependencies']").value = period.dependencies;
         })
     })
 </script>
