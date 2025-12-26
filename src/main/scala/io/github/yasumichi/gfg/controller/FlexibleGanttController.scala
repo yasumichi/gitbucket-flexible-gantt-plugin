@@ -101,6 +101,26 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     }
   })
 
+  ajaxGet("/:owner/:repository/flexible-gantt/issues/:issueId")(readableUsersOnly { repository =>
+    context.withLoginAccount { loginAccount =>
+      implicit val session: Session = Database.getSession(context.request)
+      contentType = formats("json")
+      val issueId:Int = params("issueId").toInt
+      org.json4s.jackson.Serialization.write(
+        "period" ->
+          getIssuePeriod(repository.owner, repository.name, issueId)
+            .map { t =>
+              Map(
+                "startDate" -> t.startDate,
+                "endDate" -> t.endDate,
+                "progress" -> t.progress,
+                "dependencies" -> t.dependencies
+              )
+            }
+      )
+    }
+  })
+
   ajaxPost("/:owner/:repository/issues/:issueId/period")(writableUsersOnly { repository =>
     context.withLoginAccount { loginAccount =>
       implicit val session: Session = Database.getSession(context.request)
