@@ -13,6 +13,8 @@
             <svg id="gantt" width="90%" height="90%"></svg>
         </div>
         <script>
+            const issuebase = "@context.baseUrl/@repository.owner/@repository.name/issues/";
+
             function init() {
                 const url = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues";
                 fetch(url)
@@ -25,7 +27,7 @@
                     const tasks = data.list;
                     var gantt_chart = new Gantt("#gantt", tasks, {
                         on_click: function (task) {
-                            console.log(task);
+                            window.open(issuebase + task.id)
                         },
                         on_date_change: function(task, start, end) {
                             console.log(task, start, end);
