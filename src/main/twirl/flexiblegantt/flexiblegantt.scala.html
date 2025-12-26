@@ -31,7 +31,6 @@
                             window.open(issuebase + task.id)
                         },
                         on_date_change: function(task, start, end) {
-                            console.log(task, start, end);
                             var postUrl = issuebase + task.id + postSuffix;
                             const params = new URLSearchParams();
                             params.append("startDate", start.toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
