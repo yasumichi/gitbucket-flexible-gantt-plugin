@@ -50,7 +50,23 @@
                             })
                         },
                         on_progress_change: function(task, progress) {
-                            console.log(task, progress);
+                            var postUrl = issuebase + task.id + postSuffix;
+                            const params = new URLSearchParams();
+                            params.append("startDate", (new Date(task.start)).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
+                            params.append("endDate", (new Date(task.end)).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
+                            params.append("progress", progress);
+                            params.append("dependencies", task.dependencies);
+                            const options = {
+                                method: 'POST',
+                                body: params
+                            };
+                            fetch(postUrl, options).then((e) => {
+                                if (e.status === 200) {
+                                    console.log(e)
+                                    return
+                                }
+                                console.log(e)
+                            })
                         },
                         on_view_change: function(mode) {
                             console.log(mode);
