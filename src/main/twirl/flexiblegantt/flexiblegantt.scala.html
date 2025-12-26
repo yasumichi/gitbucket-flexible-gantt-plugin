@@ -14,6 +14,7 @@
         </div>
         <script>
             const issuebase = "@context.baseUrl/@repository.owner/@repository.name/issues/";
+            const postSuffix = "/period";
 
             function init() {
                 const url = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues";
@@ -31,6 +32,23 @@
                         },
                         on_date_change: function(task, start, end) {
                             console.log(task, start, end);
+                            var postUrl = issuebase + task.id + postSuffix;
+                            const params = new URLSearchParams();
+                            params.append("startDate", start.toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
+                            params.append("endDate", end.toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
+                            params.append("progress", task.progress);
+                            params.append("dependencies", task.dependencies);
+                            const options = {
+                                method: 'POST',
+                                body: params
+                            };
+                            fetch(postUrl, options).then((e) => {
+                                if (e.status === 200) {
+                                    console.log(e)
+                                    return
+                                }
+                                console.log(e)
+                            })
                         },
                         on_progress_change: function(task, progress) {
                             console.log(task, progress);
