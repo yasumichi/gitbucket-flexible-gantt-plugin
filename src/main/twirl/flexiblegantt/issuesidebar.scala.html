@@ -12,21 +12,34 @@
 @import gitbucket.core.util.Directory._
 <hr>
 <div class="panel panel-default">
-    <div class="panel-heading"><i class="menu-icon octicon octicon-dashboard"></i>Flexible Gantt</div>
+    <div class="panel-heading">
+        <i class="menu-icon octicon octicon-dashboard"></i>Flexible Gantt
+        @if(isEditable) {
+            <div class="pull-right">
+                <i id="edit-gfg" class="menu-icon octicon octicon-pencil"></i>
+            </div>
+        }
+    </div>
     <div class="panel-body">
         <form method="post" id="gfgform" action="@context.path/@owner/@repositoryName/issues/@issueId/period">
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Start</span>
-                <div class="pull-right"><input type="date" name="startDate" class="form-control input-sm custom-field-editor" value=""></div>
+                <div class="pull-right">
+                    <input type="date" name="startDate" class="form-control input-sm custom-field-editor" value="" style="display: none;">
+                    <span id="startDateText">Not Set</span>
+                </div>
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">End</span>
-                <div class="pull-right"><input type="date" name="endDate" class="form-control input-sm custom-field-editor" value=""></div>
+                <div class="pull-right">
+                    <input type="date" name="endDate" class="form-control input-sm custom-field-editor" value="" style="display: none;">
+                    <span id="endDateText">Not Set</span>
+                </div>
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Progress</span>
                 <div class="pull-right">
-                    <select class="form-control input-sm custom-field-editor" name="progress">
+                    <select class="form-control input-sm custom-field-editor" name="progress" style="display: none;">
                         <option>0</option>
                         <option>10</option>
                         <option>20</option>
@@ -39,24 +52,41 @@
                         <option>90</option>
                         <option>100</option>
                     </select>
+                    <span id="progressText">Not Set</span>
                 </div>
             </div>
             <div style="margin-bottom: 14px;">
                 <span class="muted small strong">Dependencies</span>
-                <div class="pull-right"><input type="text" name="dependencies" maxlength="100" value=""></div>
+                <div class="pull-right">
+                    <input type="text" name="dependencies" maxlength="100" value="" style="display: none;">
+                    <span id="dependenciesText">Not Set</span>
+                </div>
             </div>
-            <div id="gfg-msg" class="alert" style="margin-bottom: 14px;"></div>
+            <div id="gfg-msg" class="alert" style="margin-bottom: 14px;display: none;"></div>
             <div style="margin-bottom: 14px;">
                 <div class="pull-right">
-                    <button class="btn btn-default btn-sm strong" id="gfgpost" type="button">Set</button>
+                    <button class="btn btn-default btn-sm strong" id="gfgpost" type="button" style="display: none;">Update</button>
+                    <button class="btn btn-default btn-sm strong" id="gfgcancel" type="button" style="display: none;">Cancel</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 <script type="text/javascript">
+    const editgfg = document.querySelector("#edit-gfg");
+    const startDate = document.querySelector("input[name='startDate']");
+    const startDateText = document.querySelector("#startDateText");
+    const endDate = document.querySelector("input[name='endDate']");
+    const endDateText = document.querySelector("#endDateText");
+    const progress = document.querySelector("select[name='progress']");
+    const progressText = document.querySelector("#progressText");
+    const dependencies = document.querySelector("input[name='dependencies']");
+    const dependenciesText = document.querySelector("#dependenciesText");
+    const gfgmsg = document.querySelector("#gfg-msg");
+    const gfgpost = document.querySelector("#gfgpost");
+    const gfgcancel = document.querySelector("#gfgcancel");
+
     const notifyNoneRegistered = function() {
-        const gfgmsg = document.querySelector("#gfg-msg");
         gfgmsg.className = "alert alert-warning";
         gfgmsg.setAttribute('role', 'alert');
         gfgmsg.textContent = "The changes is not registered.";
@@ -64,10 +94,10 @@
 
     const registereEvents = function() {
         [
-            document.querySelector("input[name='startDate']"),
-            document.querySelector("input[name='endDate']"),
-            document.querySelector("select[name='progress']"),
-            document.querySelector("input[name='dependencies']")
+            startDate,
+            endDate,
+            progress,
+            dependencies 
         ].forEach((node, index) => {
             node.addEventListener('change', (e) => {
                 notifyNoneRegistered();
@@ -76,13 +106,56 @@
     };
 
     const clearAlert = function () {
-        const gfgmsg = document.querySelector("#gfg-msg");
         gfgmsg.className = "alert";
         gfgmsg.setAttribute('role', 'alert');
         gfgmsg.textContent = "";
     };
 
-    document.getElementById("gfgpost").addEventListener('click', (e) => {
+    const enterEditMode = function () {
+        [
+            [startDate, startDateText],
+            [endDate, endDateText],
+            [progress, progressText],
+            [dependencies, dependenciesText]
+        ].forEach((elem, index) => {
+            elem[0].style.display = "inline-block";
+            elem[1].style.display = "none";
+        });
+        gfgmsg.style.display = "inline-block";
+        gfgpost.style.display = "inline-block";
+        gfgcancel.style.display = "inline-block";
+    };
+
+    const cancelEditMode = function () {
+        [
+            [startDate, startDateText],
+            [endDate, endDateText],
+            [progress, progressText],
+            [dependencies, dependenciesText]
+        ].forEach((elem, index) => {
+            elem[0].style.display = "none";
+            elem[1].style.display = "inline-block";
+            if (elem[1].textContent === "Not Set") {
+                console.log(elem[0].tagName);
+                if (elem[0].tagName === "SELECT") {
+                    elem[0].value = "0";
+                } else {
+                    elem[0].value = "";
+                }
+            } else {
+                elem[0].value = elem[1].textContent;
+            }
+        });
+        gfgmsg.style.display = "none";
+        gfgpost.style.display = "none";
+        gfgcancel.style.display = "none";
+    };
+
+    if (editgfg) {
+        editgfg.addEventListener('click', (e) => enterEditMode(), false);
+    }
+
+    gfgpost.addEventListener('click', (e) => {
         const gfgmsg = document.querySelector("#gfg-msg");
         const form = document.getElementById("gfgform")
         const params = new URLSearchParams();
@@ -99,18 +172,34 @@
         .then((res) => {
             if(res.ok) {
                 return res.json();
+            } else {
+                throw new Error("Registration failure");
             }
-            gfgmsg.className = "alert alert-danger";
-            gfgmsg.setAttribute('role', 'alert');
-            gfgmsg.textContent = res.message;
         })
         .then(data => {
+            [
+                [startDate, startDateText],
+                [endDate, endDateText],
+                [progress, progressText],
+                [dependencies, dependenciesText]
+            ].forEach((elem, index) => {
+                elem[1].textContent = elem[0].value;
+            });
             gfgmsg.className = "alert alert-success";
             gfgmsg.setAttribute('role', 'alert');
             gfgmsg.textContent = data.message;
             setTimeout(() => clearAlert(), 10000);
+            cancelEditMode();
         })
-    })
+        .catch(e =>{
+            gfgmsg.className = "alert alert-danger";
+            gfgmsg.setAttribute('role', 'alert');
+            gfgmsg.textContent = e.message;
+        });
+    });
+
+    gfgcancel.addEventListener('click', (e) => cancelEditMode(), false);
+
     document.addEventListener('DOMContentLoaded', (e) => {
         const url = "@context.path/@owner/@repositoryName/flexible-gantt/issues/@issueId"
         fetch(url)
@@ -122,15 +211,19 @@
         .then(data =>{
             if (data.period.length == 0) return;
             var period = data.period[0];
-            document.querySelector("input[name='startDate']").value = (new Date(Date.parse(period.startDate)))
+            startDate.value = (new Date(Date.parse(period.startDate)))
                 .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
-            document.querySelector("input[name='endDate']").value =  (new Date(Date.parse(period.endDate) - 1))
+            startDateText.textContent = startDate.value;
+            endDate.value =  (new Date(Date.parse(period.endDate) - 1))
                 .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
-            document.querySelector("select[name='progress']").value = period.progress;
-            document.querySelector("input[name='dependencies']").value = period.dependencies;
+            endDateText.textContent = endDate.value;
+            progress.value = period.progress;
+            progressText.textContent = period.progress;
+            dependencies.value = period.dependencies;
+            dependenciesText.textContent = period.dependencies;
         })
         .finally(() => {
             registereEvents();
         })
-    })
+    });
 </script>
