@@ -75,6 +75,13 @@
         })
     };
 
+    const clearAlert = function () {
+        const gfgmsg = document.querySelector("#gfg-msg");
+        gfgmsg.className = "alert";
+        gfgmsg.setAttribute('role', 'alert');
+        gfgmsg.textContent = "";
+    };
+
     document.getElementById("gfgpost").addEventListener('click', (e) => {
         const gfgmsg = document.querySelector("#gfg-msg");
         const form = document.getElementById("gfgform")
@@ -101,6 +108,7 @@
             gfgmsg.className = "alert alert-success";
             gfgmsg.setAttribute('role', 'alert');
             gfgmsg.textContent = data.message;
+            setTimeout(() => clearAlert(), 10000);
         })
     })
     document.addEventListener('DOMContentLoaded', (e) => {
