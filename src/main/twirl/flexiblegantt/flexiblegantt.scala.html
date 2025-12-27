@@ -10,6 +10,9 @@
 @import gitbucket.core.util.Directory._
 @gitbucket.core.html.main("Flexible Gantt", Some(repository)) {
     @gitbucket.core.html.menu("gantt", repository) {
+        <div id="gfg-menu">
+            <div class="pull-right"><a class="btn btn-success" href="@context.baseUrl/@repository.owner/@repository.name/issues/new">New issue</a></div>
+        </div>
         <div id="gfg-msg" class="alert"></div>
         <div class="container">
             <svg id="gantt" width="90%" height="90%"></svg>
