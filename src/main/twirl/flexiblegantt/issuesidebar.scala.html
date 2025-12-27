@@ -55,6 +55,26 @@
     </div>
 </div>
 <script type="text/javascript">
+    const notifyNoneRegistered = function() {
+        const gfgmsg = document.querySelector("#gfg-msg");
+        gfgmsg.className = "alert alert-warning";
+        gfgmsg.setAttribute('role', 'alert');
+        gfgmsg.textContent = "The changes is not registered.";
+    };
+
+    const registereEvents = function() {
+        [
+            document.querySelector("input[name='startDate']"),
+            document.querySelector("input[name='endDate']"),
+            document.querySelector("select[name='progress']"),
+            document.querySelector("input[name='dependencies']")
+        ].forEach((node, index) => {
+            node.addEventListener('change', (e) => {
+                notifyNoneRegistered();
+            }, true);
+        })
+    };
+
     document.getElementById("gfgpost").addEventListener('click', (e) => {
         const gfgmsg = document.querySelector("#gfg-msg");
         const form = document.getElementById("gfgform")
@@ -100,6 +120,9 @@
                 .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
             document.querySelector("select[name='progress']").value = period.progress;
             document.querySelector("input[name='dependencies']").value = period.dependencies;
+        })
+        .finally(() => {
+            registereEvents();
         })
     })
 </script>
