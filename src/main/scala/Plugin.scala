@@ -24,7 +24,8 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
   override val pluginName: String = "Flexible Gantt Plugin"
   override val description: String = "Flexible Gantt Plugin"
   override val versions: List[Version] = List(
-    new Version("0.1.0", new LiquibaseMigration("update/gitbucket-flexible-gantt-0.1.0.xml"))
+    new Version("0.1.0", new LiquibaseMigration("update/gitbucket-flexible-gantt-0.1.0.xml")),
+    new Version("0.1.1")
   )
 
   override val controllers = Seq(
