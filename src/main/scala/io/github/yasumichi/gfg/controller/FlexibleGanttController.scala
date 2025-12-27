@@ -142,7 +142,7 @@ trait FlexibleGanttControllerBase extends ControllerBase {
 
       org.json4s.jackson.Serialization.write(
         Map(
-          "message" -> "updated issue period"
+          "message" -> s"updated issue#${issueId} period"
         )
       )
     }
