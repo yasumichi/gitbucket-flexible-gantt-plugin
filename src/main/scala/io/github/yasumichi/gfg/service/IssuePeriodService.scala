@@ -61,14 +61,17 @@ trait IssuePeriodService {
       repositoryName: String,
       issueId: Int
   )(implicit session: Session): List[IssuePeriod] = {
-    IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId).list
+    IssuePeriods
+      .filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId)
+      .list
   }
 
   def getIssuePeriods(
       userName: String,
       repositoryName: String
   )(implicit session: Session): List[(io.github.yasumichi.gfg.model.IssuePeriod, gitbucket.core.model.Issue)] = {
-    IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName)
+    IssuePeriods
+      .filter(i => i.userName === userName && i.repositoryName === repositoryName)
       .join(Issues)
       .on { case (t1: IssuePeriods, t2: Issues) =>
         t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId
@@ -90,8 +93,7 @@ trait IssuePeriodService {
     calendar.add(Calendar.DATE, 1)
     val endDatePlus = calendar.getTime()
 
-    if (getIssuePeriod(userName, repositoryName, issueId).isEmpty)
-    {
+    if (getIssuePeriod(userName, repositoryName, issueId).isEmpty) {
       IssuePeriods.insert(
         IssuePeriod(
           userName = userName,
@@ -104,9 +106,10 @@ trait IssuePeriodService {
         )
       )
     } else {
-      IssuePeriods.filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId)
-      .map ( t => (t.startDate, t.endDate, t.progress, t.dependencies) )
-      .update((startDate, endDatePlus, progress, dependencies))
+      IssuePeriods
+        .filter(i => i.userName === userName && i.repositoryName === repositoryName && i.issueId === issueId)
+        .map(t => (t.startDate, t.endDate, t.progress, t.dependencies))
+        .update((startDate, endDatePlus, progress, dependencies))
     }
   }
 }
