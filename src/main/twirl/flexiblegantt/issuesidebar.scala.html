@@ -116,7 +116,7 @@
             var period = data.period[0];
             document.querySelector("input[name='startDate']").value = (new Date(Date.parse(period.startDate)))
                 .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
-            document.querySelector("input[name='endDate']").value =  (new Date(Date.parse(period.endDate)))
+            document.querySelector("input[name='endDate']").value =  (new Date(Date.parse(period.endDate) - 1))
                 .toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-');
             document.querySelector("select[name='progress']").value = period.progress;
             document.querySelector("input[name='dependencies']").value = period.dependencies;
