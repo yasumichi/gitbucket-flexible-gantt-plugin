@@ -45,6 +45,7 @@
                 <span class="muted small strong">Dependencies</span>
                 <div class="pull-right"><input type="text" name="dependencies" maxlength="100" value=""></div>
             </div>
+            <div id="gfg-msg" style="margin-bottom: 14px;"></div>
             <div style="margin-bottom: 14px;">
                 <div class="pull-right">
                     <button class="btn btn-default btn-sm strong" id="gfgpost" type="button">Set</button>
@@ -55,6 +56,7 @@
 </div>
 <script type="text/javascript">
     document.getElementById("gfgpost").addEventListener('click', (e) => {
+        const gfgmsg = document.querySelector("#gfg-msg");
         const form = document.getElementById("gfgform")
         const params = new URLSearchParams();
         params.append("startDate", document.querySelector("input[name='startDate']").value)
@@ -66,12 +68,19 @@
             method: 'POST',
             body: params
         }
-        fetch(action, options).then((e) => {
-            if(e.status === 200) {
-                console.log(e)
-                return
+        fetch(action, options)
+        .then((res) => {
+            if(res.ok) {
+                return res.json();
             }
-            console.log(e)
+            gfgmsg.className = "alert alert-danger";
+            gfgmsg.setAttribute('role', 'alert');
+            gfgmsg.textContent = res.message;
+        })
+        .then(data => {
+            gfgmsg.className = "alert alert-success";
+            gfgmsg.setAttribute('role', 'alert');
+            gfgmsg.textContent = data.message;
         })
     })
     document.addEventListener('DOMContentLoaded', (e) => {
