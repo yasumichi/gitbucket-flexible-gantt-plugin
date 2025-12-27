@@ -149,8 +149,9 @@
         gfgpost.style.display = "none";
         gfgcancel.style.display = "none";
         setTimeout(() => {
+            clearAlert();
             gfgmsg.style.display = "none";
-        }, 100000)
+        }, 10000)
     };
 
     if (editgfg) {
@@ -200,7 +201,10 @@
         });
     });
 
-    gfgcancel.addEventListener('click', (e) => cancelEditMode(), false);
+    gfgcancel.addEventListener('click', (e) => {
+        clearAlert();
+        cancelEditMode();
+    }, false);
 
     document.addEventListener('DOMContentLoaded', (e) => {
         const url = "@context.path/@owner/@repositoryName/flexible-gantt/issues/@issueId"
