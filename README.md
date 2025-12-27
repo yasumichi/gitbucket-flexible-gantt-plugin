@@ -20,7 +20,7 @@ Powered by [Frappe Gantt](https://github.com/frappe/gantt)
 ## ToDo
 
 - [ ] Write comments seriously
-- [ ] Properly notify users during registration
+- [x] Properly notify users during registration
 - [ ] Enable setting changes for holidays, etc.
 - [ ] Add input assistance for dependent issues
 - [ ] Enable new issue creation from the Gantt chart screen
