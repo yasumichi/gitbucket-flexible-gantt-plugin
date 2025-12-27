@@ -22,6 +22,7 @@
                 gfgmsg.className = "alert alert-success";
                 gfgmsg.setAttribute('role', 'alert');
                 gfgmsg.textContent = message;
+                setTimeout(() => clearAlert(), 10000)
             };
 
             const setDanger = function (message) {
@@ -29,6 +30,7 @@
                 gfgmsg.className = "alert alert-danger";
                 gfgmsg.setAttribute('role', 'alert');
                 gfgmsg.textContent = message;
+                setTimeout(() => clearAlert(), 10000)
             };
 
             const clearAlert = function () {
@@ -73,11 +75,9 @@
                             })
                             .then((data) => {
                                 setSuccess(data.message);
-                                setTimeout(() => clearAlert(), 10000)
                             })
                             .catch((e) => {
                                 setDanger(e.message);
-                                setTimeout(() => clearAlert(), 10000)
                             });
                         },
                         on_progress_change: function(task, progress) {
@@ -101,11 +101,9 @@
                             })
                             .then((data) => {
                                 setSuccess(data.message);
-                                setTimeout(() => clearAlert(), 10000)
                             })
                             .catch((e) => {
                                 setDanger(e.message);
-                                setTimeout(() => clearAlert(), 10000)
                             });
                         },
                         on_view_change: function(mode) {
