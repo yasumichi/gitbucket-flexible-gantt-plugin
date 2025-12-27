@@ -67,12 +67,16 @@
                             .then((res) => {
                                 if (res.ok) {
                                     return res.json();
+                                } else {
+                                    throw new Error("Registration failure");
                                 }
-                                setDanger(e.message);
-                                setTimeout(() => clearAlert(), 10000)
                             })
                             .then((data) => {
                                 setSuccess(data.message);
+                                setTimeout(() => clearAlert(), 10000)
+                            })
+                            .catch((e) => {
+                                setDanger(e.message);
                                 setTimeout(() => clearAlert(), 10000)
                             });
                         },
@@ -91,12 +95,16 @@
                             .then((res) => {
                                 if (res.ok) {
                                     return res.json();
+                                } else {
+                                    throw new Error("Registration failure");
                                 }
-                                setDanger(e.message);
-                                setTimeout(() => clearAlert(), 10000)
                             })
                             .then((data) => {
                                 setSuccess(data.message);
+                                setTimeout(() => clearAlert(), 10000)
+                            })
+                            .catch((e) => {
+                                setDanger(e.message);
                                 setTimeout(() => clearAlert(), 10000)
                             });
                         },
