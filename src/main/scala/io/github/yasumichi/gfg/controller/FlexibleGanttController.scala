@@ -75,7 +75,8 @@ trait FlexibleGanttControllerBase extends ControllerBase {
   get("/:owner/:repository/flexible-gantt") {
     referrersOnly { repository: RepositoryInfo =>
       {
-        html.flexiblegantt(repository)
+        implicit val session: Session = Database.getSession(context.request)
+        html.flexiblegantt(repository, isIssueManageable(repository))
       }
     }
   }
