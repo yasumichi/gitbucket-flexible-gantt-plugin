@@ -15,9 +15,9 @@
             <svg id="gantt" width="90%" height="90%"></svg>
         </div>
         @if(isManageable) {
-            <script>const readonly = false;</script>
+            <script>var readonly = false;</script>
         } else {
-            <script>const readonly = true;</script>
+            <script>var readonly = true;</script>
         }
         <script>
             const issuebase = "@context.baseUrl/@repository.owner/@repository.name/issues/";
