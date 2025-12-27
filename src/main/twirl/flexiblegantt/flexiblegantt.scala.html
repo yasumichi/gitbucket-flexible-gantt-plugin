@@ -80,7 +80,7 @@
                             var postUrl = issuebase + task.id + postSuffix;
                             const params = new URLSearchParams();
                             params.append("startDate", (new Date(task.start)).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
-                            params.append("endDate", (new Date(task.end)).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
+                            params.append("endDate", (new Date(task.end) - 1).toLocaleDateString("ja-JP", {year: "numeric",month: "2-digit",  day: "2-digit"}).replaceAll('/', '-'));
                             params.append("progress", progress);
                             params.append("dependencies", task.dependencies);
                             const options = {
