@@ -9,12 +9,34 @@
 @import gitbucket.core.util.Directory._
 @gitbucket.core.html.main("Flexible Gantt", Some(repository)) {
     @gitbucket.core.html.menu("gantt", repository) {
+        <div id="gfg-msg" class="alert"></div>
         <div class="container">
             <svg id="gantt" width="90%" height="90%"></svg>
         </div>
         <script>
             const issuebase = "@context.baseUrl/@repository.owner/@repository.name/issues/";
             const postSuffix = "/period";
+
+            const setSuccess = function (message) {
+                const gfgmsg = document.querySelector("#gfg-msg");
+                gfgmsg.className = "alert alert-success";
+                gfgmsg.setAttribute('role', 'alert');
+                gfgmsg.textContent = message;
+            };
+
+            const setDanger = function (message) {
+                const gfgmsg = document.querySelector("#gfg-msg");
+                gfgmsg.className = "alert alert-danger";
+                gfgmsg.setAttribute('role', 'alert');
+                gfgmsg.textContent = message;
+            };
+
+            const clearAlert = function () {
+                const gfgmsg = document.querySelector("#gfg-msg");
+                gfgmsg.className = "alert";
+                gfgmsg.setAttribute('role', 'alert');
+                gfgmsg.textContent = "";
+            };
 
             function init() {
                 const url = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues";
@@ -41,13 +63,18 @@
                                 method: 'POST',
                                 body: params
                             };
-                            fetch(postUrl, options).then((e) => {
-                                if (e.status === 200) {
-                                    console.log(e)
-                                    return
+                            fetch(postUrl, options)
+                            .then((res) => {
+                                if (res.ok) {
+                                    return res.json();
                                 }
-                                console.log(e)
+                                setDanger(e.message);
+                                setTimeout(() => clearAlert(), 10000)
                             })
+                            .then((data) => {
+                                setSuccess(data.message);
+                                setTimeout(() => clearAlert(), 10000)
+                            });
                         },
                         on_progress_change: function(task, progress) {
                             var postUrl = issuebase + task.id + postSuffix;
@@ -60,13 +87,18 @@
                                 method: 'POST',
                                 body: params
                             };
-                            fetch(postUrl, options).then((e) => {
-                                if (e.status === 200) {
-                                    console.log(e)
-                                    return
+                            fetch(postUrl, options)
+                            .then((res) => {
+                                if (res.ok) {
+                                    return res.json();
                                 }
-                                console.log(e)
+                                setDanger(e.message);
+                                setTimeout(() => clearAlert(), 10000)
                             })
+                            .then((data) => {
+                                setSuccess(data.message);
+                                setTimeout(() => clearAlert(), 10000)
+                            });
                         },
                         on_view_change: function(mode) {
                             console.log(mode);
