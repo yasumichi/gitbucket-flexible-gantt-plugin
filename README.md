@@ -24,6 +24,7 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 
 - If you have edit permissions, start date, end date and progress rate can be changed by drag and drop.
 - Clicking on a task will open the corresponding issue.
+- You can filter by milestones and labels.
 
 <img width="1088" height="568" alt="image" src="https://github.com/user-attachments/assets/c8833b09-8651-4304-9e4a-57e57b38f43b" />
 
@@ -34,4 +35,4 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 - [ ] Enable setting changes for holidays, etc.
 - [ ] Add input assistance for dependent issues
 - [ ] Enable new issue creation from the Gantt chart screen
-- [ ] Enable filtering by labels and milestones
+- [x] Enable filtering by labels and milestones
