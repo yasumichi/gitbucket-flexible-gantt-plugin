@@ -13,19 +13,29 @@
 @gitbucket.core.html.main("Flexible Gantt", Some(repository)) {
     @gitbucket.core.html.menu("gantt", repository) {
         <div id="gfg-menu" style="display: flex;">
-            <nav class="navbar navbar-default" style="width: calc(100% - 90px);">
+            <nav class="navbar navbar-default" style="width: calc(100% - 90px); z-index: 2000;">
                 <div class="navbar-header">
                     <a class="navbar-brand">Filter</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
+                        <li>
+                            <a class="btn btn-default" style="width: 100px;" role="button" href="@context.baseUrl/@repository.owner/@repository.name/flexible-gantt">All</a>
+                        </li>
                         <li class="dropdown">
-                            <a class="btn btn-default dropdown-toggle" role="button" data-toggle="dropdown">
+                            <a class="btn btn-default dropdown-toggle" style="width: 100px;" role="button" data-toggle="dropdown">
                                 Milestone
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu" id="milestones">
-                                <li role="presentation"><a href="@context.baseUrl/@repository.owner/@repository.name/flexible-gantt">All</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="btn btn-default dropdown-toggle" style="width: 100px;" role="button" data-toggle="dropdown">
+                                Labels
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" id="labels">
                             </ul>
                         </li>
                     </ul>
@@ -49,6 +59,10 @@
         } else if (milestoneId > 0) {
             <script>
                 var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues/milestones/@milestoneId";
+            </script>
+        } else if (labelId > 0) {
+            <script>
+                var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues/labels/@labelId";
             </script>
         }
         <script>
@@ -102,8 +116,31 @@
                 });
             };
 
+            const setLabels = function () {
+                const labels = document.querySelector("#labels");
+                const apiLabelsUrl = "@context.baseUrl/api/v3/repos/@repository.owner/@repository.name/labels";
+                fetch(apiLabelsUrl)
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    }
+                })
+                .then(data => {
+                    data.forEach((elem, index) => {
+                        var li = document.createElement("li");
+                        li.setAttribute("role", "presentation");
+                        var a = document.createElement("a");
+                        a.textContent = elem.name;
+                        a.setAttribute("href", "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/labels/" + (index + 1));
+                        li.appendChild(a);
+                        labels.appendChild(li);
+                    });
+                });
+            };
+
             function init() {
                 setMilestones();
+                setLabels();
                 fetch(taskUrl)
                 .then(res => {
                     if (res.ok) {
@@ -171,7 +208,7 @@
                         on_view_change: function(mode) {
                             console.log(mode);
                         },
-                        container_height: document.querySelector(".content-wrapper").clientHeight - 200,
+                        container_height: document.querySelector(".content-wrapper").clientHeight - 250,
                         popup_on: 'hover',
                         readonly: readonly,
                         view_mode_select: true,
