@@ -39,6 +39,7 @@
                             </ul>
                         </li>
                     </ul>
+                    <p class="navbar-text lead" id="filterInfo"></p>
                 </div>
             </nav>
             <div class="pull-right"><a class="btn btn-success" href="@context.baseUrl/@repository.owner/@repository.name/issues/new" style="margin-top: 6px;">New issue</a></div>
@@ -68,6 +69,8 @@
         <script>
             const issuebase = "@context.baseUrl/@repository.owner/@repository.name/issues/";
             const postSuffix = "/period";
+            const filterInfo = document.querySelector("#filterInfo");
+            const pathElems = location.pathname.split('/');
 
             const setSuccess = function (message) {
                 const gfgmsg = document.querySelector("#gfg-msg");
@@ -102,6 +105,13 @@
                     }
                 })
                 .then(data => {
+                    var milestoneList = data;
+                    if (pathElems[pathElems.length - 1] !== 'flexible-gantt' && pathElems[pathElems.length - 2] === 'milestones' && milestoneList.length > 0)
+                    {
+                        filterInfo.textContent = "(milestone: " + milestoneList.filter((elem, index, array) => {
+                            return elem.id === parseInt(pathElems[pathElems.length - 1]);
+                        })[0].title + ")";
+                    }
                     data.forEach((elem, index) => {
                         if (elem.state === "open" && elem.open_issues > 0) {
                             var li = document.createElement("li");
@@ -126,6 +136,11 @@
                     }
                 })
                 .then(data => {
+                    var labelList = data;
+                    if (pathElems[pathElems.length - 1] !== 'flexible-gantt' && pathElems[pathElems.length - 2] === 'labels' && labelList.length > 0)
+                    {
+                        filterInfo.textContent = "(label: " + labelList[parseInt(pathElems[pathElems.length - 1]) - 1].name + ")";
+                    }
                     data.forEach((elem, index) => {
                         var li = document.createElement("li");
                         li.setAttribute("role", "presentation");
