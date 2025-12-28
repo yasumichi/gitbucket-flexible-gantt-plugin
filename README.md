@@ -26,7 +26,7 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 - Clicking on a task will open the corresponding issue.
 - You can filter by milestones and labels.
 
-<img width="1088" height="568" alt="image" src="https://github.com/user-attachments/assets/c8833b09-8651-4304-9e4a-57e57b38f43b" />
+<img width="1920" height="945" alt="localhost_8080_gitbucket_yasumichi_ForEnglishUser_flexible-gantt" src="https://github.com/user-attachments/assets/1e5328de-fab2-46de-8ac3-1c2bfd801d89" />
 
 ## ToDo
 
@@ -34,5 +34,5 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 - [x] Properly notify users during registration
 - [ ] Enable setting changes for holidays, etc.
 - [ ] Add input assistance for dependent issues
-- [ ] Enable new issue creation from the Gantt chart screen
+- [x] Enable new issue creation from the Gantt chart screen
 - [x] Enable filtering by labels and milestones
