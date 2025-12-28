@@ -76,7 +76,7 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, 0, 0, isIssueManageable(repository))
+        html.flexiblegantt(repository, 0, "", isIssueManageable(repository))
       }
     }
   }
@@ -85,16 +85,16 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, params("milestoneId").toInt, 0, isIssueManageable(repository))
+        html.flexiblegantt(repository, params("milestoneId").toInt, "", isIssueManageable(repository))
       }
     }
   }
 
-  get("/:owner/:repository/flexible-gantt/labels/:labelId") {
+  get("/:owner/:repository/flexible-gantt/labels/:labelName") {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, 0, params("labelId").toInt, isIssueManageable(repository))
+        html.flexiblegantt(repository, 0, params("labelName"), isIssueManageable(repository))
       }
     }
   }
@@ -137,12 +137,12 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     )
   })
 
-  ajaxGet("/:owner/:repository/flexible-gantt/issues/labels/:labelId")(readableUsersOnly { repository =>
+  ajaxGet("/:owner/:repository/flexible-gantt/issues/labels/:labelName")(readableUsersOnly { repository =>
     implicit val session: Session = Database.getSession(context.request)
     contentType = formats("json")
     org.json4s.jackson.Serialization.write(
       "list" ->
-        getIssuePeriodsByLabel(repository.owner, repository.name, params("labelId").toInt)
+        getIssuePeriodsByLabel(repository.owner, repository.name, params("labelName"))
           .map { t =>
             Map(
               "id" -> t._1.issueId.toString(),

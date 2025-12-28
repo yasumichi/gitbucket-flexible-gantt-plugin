@@ -1,7 +1,7 @@
 @(
     repository: gitbucket.core.service.RepositoryService.RepositoryInfo,
     milestoneId: Int,
-    labelId: Int,
+    labelName: String,
     isManageable: Boolean
 )(implicit context: gitbucket.core.controller.Context)
 @import context._
@@ -53,7 +53,7 @@
         } else {
             <script>var readonly = true;</script>
         }
-        @if(milestoneId == 0 && labelId == 0) {
+        @if(milestoneId == 0 && labelName == "") {
             <script>
                 var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues";
             </script>
@@ -61,9 +61,9 @@
             <script>
                 var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues/milestones/@milestoneId";
             </script>
-        } else if (labelId > 0) {
+        } else if (labelName != "") {
             <script>
-                var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues/labels/@labelId";
+                var taskUrl = "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/issues/labels/@labelName";
             </script>
         }
         <script>
@@ -139,14 +139,14 @@
                     var labelList = data;
                     if (pathElems[pathElems.length - 1] !== 'flexible-gantt' && pathElems[pathElems.length - 2] === 'labels' && labelList.length > 0)
                     {
-                        filterInfo.textContent = "(label: " + labelList[parseInt(pathElems[pathElems.length - 1]) - 1].name + ")";
+                        filterInfo.textContent = "(label: @labelName)";
                     }
                     data.forEach((elem, index) => {
                         var li = document.createElement("li");
                         li.setAttribute("role", "presentation");
                         var a = document.createElement("a");
                         a.textContent = elem.name;
-                        a.setAttribute("href", "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/labels/" + (index + 1));
+                        a.setAttribute("href", "@context.baseUrl/@repository.owner/@repository.name/flexible-gantt/labels/" + elem.name);
                         li.appendChild(a);
                         labels.appendChild(li);
                     });
