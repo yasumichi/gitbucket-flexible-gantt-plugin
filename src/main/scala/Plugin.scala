@@ -43,7 +43,7 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     val path = settings.baseUrl.getOrElse(context.getContextPath)
 
     Seq(
-      ".*/flexible-gantt" ->
+      ".*/flexible-gantt.*" ->
         s"""|</script>
           |
           |<link rel="stylesheet" href="$path/plugin-assets/flexible-gantt/frappe-gantt.css">
