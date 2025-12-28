@@ -79,6 +79,20 @@ trait IssuePeriodService {
       .list
   }
 
+  def getIssuePeriodsByMilestone(
+      userName: String,
+      repositoryName: String,
+      milestoneId: Int
+  )(implicit session: Session): List[(gitbucket.core.model.Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
+    Issues
+      .filter(_.byMilestone(userName, repositoryName, milestoneId))
+      .join(IssuePeriods)
+      .on { case (t1: Issues, t2: IssuePeriods) =>
+        t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId
+      }
+      .list
+  }
+
   def insertIssuePeriod(
       userName: String,
       repositoryName: String,

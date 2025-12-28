@@ -76,7 +76,25 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, isIssueManageable(repository))
+        html.flexiblegantt(repository, 0, 0, isIssueManageable(repository))
+      }
+    }
+  }
+
+  get("/:owner/:repository/flexible-gantt/milestones/:milestoneId") {
+    referrersOnly { repository: RepositoryInfo =>
+      {
+        implicit val session: Session = Database.getSession(context.request)
+        html.flexiblegantt(repository, params("milestoneId").toInt, 0, isIssueManageable(repository))
+      }
+    }
+  }
+
+  get("/:owner/:repository/flexible-gantt/labels/:labelId") {
+    referrersOnly { repository: RepositoryInfo =>
+      {
+        implicit val session: Session = Database.getSession(context.request)
+        html.flexiblegantt(repository, 0, params("labelId").toInt, isIssueManageable(repository))
       }
     }
   }
@@ -95,6 +113,25 @@ trait FlexibleGanttControllerBase extends ControllerBase {
               "end" -> t._1.endDate,
               "progress" -> t._1.progress,
               "dependencies" -> t._1.dependencies
+            )
+          }
+    )
+  })
+
+  ajaxGet("/:owner/:repository/flexible-gantt/issues/milestones/:milestoneId")(readableUsersOnly { repository =>
+    implicit val session: Session = Database.getSession(context.request)
+    contentType = formats("json")
+    org.json4s.jackson.Serialization.write(
+      "list" ->
+        getIssuePeriodsByMilestone(repository.owner, repository.name, params("milestoneId").toInt)
+          .map { t =>
+            Map(
+              "id" -> t._1.issueId.toString(),
+              "name" -> t._1.title,
+              "start" -> t._2.startDate,
+              "end" -> t._2.endDate,
+              "progress" -> t._2.progress,
+              "dependencies" -> t._2.dependencies
             )
           }
     )
