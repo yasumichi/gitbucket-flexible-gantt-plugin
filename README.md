@@ -33,6 +33,6 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 - [ ] Write comments seriously
 - [x] Properly notify users during registration
 - [ ] Enable setting changes for holidays, etc.
-- [ ] Add input assistance for dependent issues
+- [x] Add input assistance for dependent issues
 - [x] Enable new issue creation from the Gantt chart screen
 - [x] Enable filtering by labels and milestones
