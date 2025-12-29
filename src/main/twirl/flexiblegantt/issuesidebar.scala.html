@@ -59,10 +59,12 @@
                 <span class="muted small strong">Dependencies</span>
                 <div class="pull-right">
                     <input type="text" name="dependencies" maxlength="100" value="" style="display: none;">
+                    <button id="refIssue" type="button" class="btn" data-toggle="modal" data-target="#issueListDialog" style="display: none;">
+                        <i class="menu-icon octicon octicon-issue-opened"></i>
+                    </button>
                     <span id="dependenciesText">Not Set</span>
                 </div>
             </div>
-            <div id="gfg-msg" class="alert" style="margin-bottom: 14px;display: none;"></div>
             <div style="margin-bottom: 14px;">
                 <div class="pull-right">
                     <button class="btn btn-default btn-sm strong" id="gfgpost" type="button" style="display: none;">Update</button>
@@ -71,6 +73,30 @@
             </div>
         </form>
     </div>
+</div>
+<div id="gfg-msg" class="alert" style="margin-bottom: 14px;"></div>
+<div class="modal fade" id="issueListDialog" tabindex="-1">
+    <div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+				<h4 class="modal-title">Search issues</h4>
+			</div>
+			<div class="modal-body">
+                <div>
+                    <label>Search</label>
+                    <input type="text" id="searchIssueText">
+                    <button id="searchIssue" class="btn btn-default"><i class="menu-icon octicon octicon-search"></i>></i></button>
+                </div>
+                <div id="issueListBody" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc;">
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button id="gfgUpdate" type="button" class="btn btn-primary">Update</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>
 <script type="text/javascript">
     const editgfg = document.querySelector("#edit-gfg");
@@ -82,9 +108,13 @@
     const progressText = document.querySelector("#progressText");
     const dependencies = document.querySelector("input[name='dependencies']");
     const dependenciesText = document.querySelector("#dependenciesText");
+    const refIssue = document.querySelector("#refIssue");
     const gfgmsg = document.querySelector("#gfg-msg");
     const gfgpost = document.querySelector("#gfgpost");
     const gfgcancel = document.querySelector("#gfgcancel");
+    const issueListBody = document.querySelector("#issueListBody");
+    const searchIssue  = document.querySelector("#searchIssue");
+    const searchIssueText  = document.querySelector("#searchIssueText");
 
     const notifyNoneRegistered = function() {
         gfgmsg.className = "alert alert-warning";
@@ -121,7 +151,7 @@
             elem[0].style.display = "inline-block";
             elem[1].style.display = "none";
         });
-        gfgmsg.style.display = "inline-block";
+        refIssue.style.display = "inline-block";
         gfgpost.style.display = "inline-block";
         gfgcancel.style.display = "inline-block";
     };
@@ -146,20 +176,99 @@
                 elem[0].value = elem[1].textContent;
             }
         });
+        refIssue.style.display = "none";
         gfgpost.style.display = "none";
         gfgcancel.style.display = "none";
         setTimeout(() => {
             clearAlert();
-            gfgmsg.style.display = "none";
         }, 10000)
+    };
+
+    const getIssues = function() {
+        const issueUrl = "@context.path/api/v3/repos/@owner/@repositoryName/issues";
+        fetch(issueUrl)
+        .then((res) =>{
+            if(res.ok) {
+                return res.json();
+            } else {
+                console.log(res);
+            }
+        })
+        .then(data => {
+            var currentIssue = parseInt("@issueId");
+            data
+            .filter((value, index) => {
+                return value.number != currentIssue;
+            })
+            .sort((a, b) => a.number -b.number)
+            .forEach((issue, index) => {
+                if (issue.state === "open") {
+                    var panel = document.createElement("div");
+                    panel.classList.add("panel","panel-primary");
+                    var panelBody = document.createElement("div");
+                    panelBody.classList.add("panel-body");
+                    var checkbox = document.createElement("input");
+                    checkbox.setAttribute("type", "checkbox");
+                    checkbox.setAttribute("data-id", issue.number);
+                    panelBody.appendChild(checkbox);
+                    var span = document.createElement("span");
+                    span.textContent = `#${issue.number} ${issue.title}`;
+                    panelBody.appendChild(span);
+                    panel.appendChild(panelBody);
+                    issueListBody.appendChild(panel);
+                }
+            });
+        })
+    };
+
+    const showAllIssueListBody = function () {
+        issueListBody.querySelectorAll(".panel").forEach((node, index) =>{
+            node.style.display = "block";
+        });
     };
 
     if (editgfg) {
         editgfg.addEventListener('click', (e) => enterEditMode(), false);
+        refIssue.addEventListener('click', (e) => {
+            if (dependencies.value.length > 0) {
+                var idList = dependencies.value.split(",");
+                issueListBody.querySelectorAll("input[type='checkbox']").forEach((node, index) =>{
+                    var dataId = node.getAttribute("data-id");
+                    node.checked = idList.includes(dataId);
+                });
+            } else {
+                issueListBody.querySelectorAll("input[type='checkbox']").forEach((node, index) => {
+                    node.checked = false;
+                });
+            }
+        }, true)
+        searchIssue.addEventListener('click', (e) => {
+            var target = searchIssueText.value.toLowerCase();
+            showAllIssueListBody();
+            if (target.length > 0) {
+                issueListBody.querySelectorAll(".panel").forEach((node, index) =>{
+                    if (!node.querySelector("span").textContent.toLowerCase().includes(target)) {
+                        node.style.display = "none";
+                    }
+                });
+            } else {
+                showAllIssueListBody();
+            }
+        }, true);
+        document.querySelector("#gfgUpdate").addEventListener('click', (e) => {
+            var idList = [];
+            //issueListBody
+            issueListBody.querySelectorAll("input[type='checkbox']").forEach((node, index) =>{
+                if (node.checked) {
+                    idList.push(node.getAttribute("data-id"));
+                }
+            });
+            dependencies.value = idList.join(",");
+            $('#issueListDialog').modal('hide'); 
+        });
     }
 
     gfgpost.addEventListener('click', (e) => {
-        const gfgmsg = document.querySelector("#gfg-msg");
         const form = document.getElementById("gfgform")
         const params = new URLSearchParams();
         params.append("startDate", document.querySelector("input[name='startDate']").value)
@@ -208,6 +317,7 @@
 
     document.addEventListener('DOMContentLoaded', (e) => {
         const url = "@context.path/@owner/@repositoryName/flexible-gantt/issues/@issueId"
+        getIssues();
         fetch(url)
         .then(res => {
             if (res.ok) {
