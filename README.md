@@ -10,7 +10,7 @@ Powered by [Frappe Gantt](https://github.com/frappe/gantt)
 
 When you open an issue, it is displayed in view mode.
 
-<img width="385" height="209" alt="Flexible Gantt sidebar with view mode" src="https://github.com/user-attachments/assets/dfb742e5-809b-40e7-8440-bed3b9334729" />
+<img width="385" height="209" alt="Flexible Gantt sidebar with view mode" src="https://github.com/user-attachments/assets/ac85fd39-50be-42d5-a849-c7372a06ad36" />
 
 Click the pencil icon in the top right corner to enter edit mode.
 
