@@ -19,6 +19,9 @@ import gitbucket.core.plugin.PluginRegistry
 import gitbucket.core.service.SystemSettingsService
 import javax.servlet.ServletContext
 
+/**
+  * Flexible Gantt Plugin
+  */
 class Plugin extends gitbucket.core.plugin.Plugin with AccountService with RepositoryService {
   override val pluginId: String = "flexible-gantt"
   override val pluginName: String = "Flexible Gantt Plugin"
