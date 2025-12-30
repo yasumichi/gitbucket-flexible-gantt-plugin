@@ -84,6 +84,7 @@ trait IssuePeriodService {
 
   /**
     * get issues has periods
+    * (opened issue only)
     *
     * @param userName repository owner
     * @param repositoryName repository name
@@ -93,11 +94,12 @@ trait IssuePeriodService {
   def getIssuePeriods(
       userName: String,
       repositoryName: String
-  )(implicit session: Session): List[(io.github.yasumichi.gfg.model.IssuePeriod, gitbucket.core.model.Issue)] = {
-    IssuePeriods
-      .filter(i => i.userName === userName && i.repositoryName === repositoryName)
-      .join(Issues)
-      .on { case (t1: IssuePeriods, t2: Issues) =>
+  )(implicit session: Session): List[(gitbucket.core.model.Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
+    Issues
+      .filter(_.byRepository(userName, repositoryName))
+      .filter(_.closed === false)
+      .join(IssuePeriods)
+      .on { case (t1: Issues, t2: IssuePeriods) =>
         t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId
       }
       .list
@@ -105,6 +107,7 @@ trait IssuePeriodService {
 
   /**
     * get issues has periods filtered by milestone id
+    * (opened issue only)
     *
     * @param userName repository owner
     * @param repositoryName repository name
@@ -119,6 +122,7 @@ trait IssuePeriodService {
   )(implicit session: Session): List[(gitbucket.core.model.Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
     Issues
       .filter(_.byMilestone(userName, repositoryName, milestoneId))
+      .filter(_.closed === false)
       .join(IssuePeriods)
       .on { case (t1: Issues, t2: IssuePeriods) =>
         t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId
@@ -128,6 +132,7 @@ trait IssuePeriodService {
 
   /**
     * get issues has periods filtered by label name
+    * (opened issue only)
     *
     * @param userName repository owner
     * @param repositoryName repository name
@@ -150,6 +155,7 @@ trait IssuePeriodService {
     Issues
       .filter(_.byRepository(userName, repositoryName))
       .filter(_.issueId in issueIds)
+      .filter(_.closed === false)
       .join(IssuePeriods)
       .on { case (t1: Issues, t2: IssuePeriods) =>
         t1.userName === t2.userName && t1.repositoryName === t2.repositoryName && t1.issueId === t2.issueId

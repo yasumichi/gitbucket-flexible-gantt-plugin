@@ -171,12 +171,12 @@ trait FlexibleGanttControllerBase extends ControllerBase {
         getIssuePeriods(repository.owner, repository.name)
           .map { t =>
             Map(
-              "id" -> t._2.issueId.toString(),
-              "name" -> t._2.title,
-              "start" -> t._1.startDate,
-              "end" -> t._1.endDate,
-              "progress" -> t._1.progress,
-              "dependencies" -> t._1.dependencies
+              "id" -> t._1.issueId.toString(),
+              "name" -> t._1.title,
+              "start" -> t._2.startDate,
+              "end" -> t._2.endDate,
+              "progress" -> t._2.progress,
+              "dependencies" -> t._2.dependencies
             )
           }
     )
