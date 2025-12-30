@@ -6,10 +6,19 @@ import gitbucket.core.util.SyntaxSugars._
 import java.io.File
 import scala.util.Using
 
+/**
+  * trait for system settings of Flexible Gantt
+  */
 trait GanttSettingsService {
 
+  // configuration file of Flexible Gantt
   val ganttConf = new File(GitBucketHome, "flexible-gantt.conf")
 
+  /**
+    * save settings of Flexible Gantt
+    *
+    * @param settings settings of Flexible Gantt
+    */
   def  saveGanttSettings(settings: GanttSettings): Unit = {
     val props = new java.util.Properties()
     props.setProperty(ganttLocale, settings.ganttLocale)
@@ -18,6 +27,11 @@ trait GanttSettingsService {
     }
   }
 
+  /**
+    * load settings of Flexible Gantt
+    *
+    * @return settings of Flexible Gantt
+    */
   def loadGanttSettings(): GanttSettings = {
     val props = new java.util.Properties()
     if (ganttConf.exists) {
@@ -31,13 +45,25 @@ trait GanttSettingsService {
   }
 }
 
+/**
+  * companion object for GanttSettingsSerivice
+  */
 object GanttSettingsService {
   import scala.reflect.ClassTag    
 
+  // case class for settings of Flexible Gantt
   case class GanttSettings(ganttLocale: String)
 
   private val ganttLocale = "ganttLocale"
 
+  /**
+    * get value of settings of Flexible Gantt
+    *
+    * @param props properties
+    * @param key name of setting
+    * @param default default value
+    * @return value of settings
+    */
   private def getValue[A: ClassTag](props: java.util.Properties,
                                     key: String,
                                     default: A): A = {
@@ -46,6 +72,14 @@ object GanttSettingsService {
     else convertType(value).asInstanceOf[A]
   }
 
+  /**
+    *  get value of settings of Flexible Gantt (Option type)
+    *
+    * @param props properties
+    * @param key name of setting
+    * @param default default value
+    * @return value of settings
+    */
   private def getOptionValue[A: ClassTag](props: java.util.Properties,
                                           key: String,
                                           default: Option[A]): Option[A] = {
@@ -54,6 +88,12 @@ object GanttSettingsService {
     else Some(convertType(value)).asInstanceOf[Option[A]]
   }
 
+  /**
+    * convert value type
+    *
+    * @param value string of value
+    * @return converted value
+    */
   private def convertType[A: ClassTag](value: String) = {
     val c = implicitly[ClassTag[A]].runtimeClass
     if (c == classOf[Boolean]) value.toBoolean
