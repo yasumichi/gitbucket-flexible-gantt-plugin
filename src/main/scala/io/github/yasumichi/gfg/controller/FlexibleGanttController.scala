@@ -32,6 +32,9 @@ import org.scalatra.forms.MappingValueType
 import org.scalatra.forms._
 import org.slf4j.LoggerFactory
 
+/**
+  * Controller of Flexible Gantt
+  */
 class FlexibleGanttController
     extends FlexibleGanttControllerBase
     with GanttSettingsService
@@ -59,6 +62,9 @@ class FlexibleGanttController
     with WebHookService
     with WritableUsersAuthenticator
 
+/**
+  * trait for contoroller of Flexible Gantt
+  */
 trait FlexibleGanttControllerBase extends ControllerBase {
 
   self: IssuePeriodService
@@ -87,21 +93,31 @@ trait FlexibleGanttControllerBase extends ControllerBase {
 
   private val logger = LoggerFactory.getLogger(classOf[FlexibleGanttController])
 
+  // form of system settings
   val settingsForm: MappingValueType[GanttSettings] = mapping(
     "ganttLocale" -> text(required, maxlength(200))
   )(GanttSettings.apply)
 
+  /**
+    * click system settings menu of Flexible Gantt, then return html from twirl template
+    */
   get("/admin/flexible-gantt")(adminOnly {
     val settings = loadGanttSettings()
     html.settings(settings.ganttLocale, None)
   })
 
+  /**
+    * click Apply button of system settings form of Flexible Gantt, regist to configuration file
+    */
   post("/admin/flexible-gantt", settingsForm)(adminOnly { form =>
     assert(form.ganttLocale != null)
     saveGanttSettings(form)
     html.settings(form.ganttLocale, Some("Settings Saved"))
   })
 
+  /**
+    * click repository menu of Flexible Gantt, then return html from twirl template
+    */
   get("/:owner/:repository/flexible-gantt") {
     referrersOnly { repository: RepositoryInfo =>
       {
@@ -112,6 +128,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     }
   }
 
+  /**
+    * return html from twirl template for filtering issues by milestones
+    */
   get("/:owner/:repository/flexible-gantt/milestones/:milestoneId") {
     referrersOnly { repository: RepositoryInfo =>
       {
@@ -128,6 +147,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     }
   }
 
+  /**
+    * return html from twirl template for filtering issues by label name
+    */
   get("/:owner/:repository/flexible-gantt/labels/:labelName") {
     referrersOnly { repository: RepositoryInfo =>
       {
@@ -138,6 +160,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     }
   }
 
+  /**
+    * return list of issues has period (JSON)
+    */
   ajaxGet("/:owner/:repository/flexible-gantt/issues")(readableUsersOnly { repository =>
     implicit val session: Session = Database.getSession(context.request)
     contentType = formats("json")
@@ -157,6 +182,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     )
   })
 
+  /**
+    * return list of issues filtered by milestones (JSON)
+    */
   ajaxGet("/:owner/:repository/flexible-gantt/issues/milestones/:milestoneId")(readableUsersOnly { repository =>
     implicit val session: Session = Database.getSession(context.request)
     contentType = formats("json")
@@ -176,6 +204,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     )
   })
 
+  /**
+    * return list of issues filtered by label name (JSON)
+    */
   ajaxGet("/:owner/:repository/flexible-gantt/issues/labels/:labelName")(readableUsersOnly { repository =>
     implicit val session: Session = Database.getSession(context.request)
     contentType = formats("json")
@@ -195,6 +226,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     )
   })
 
+  /**
+    * return period of one issue by issue id (JSON)
+    */
   ajaxGet("/:owner/:repository/flexible-gantt/issues/:issueId")(readableUsersOnly { repository =>
     implicit val session: Session = Database.getSession(context.request)
     contentType = formats("json")
@@ -213,6 +247,9 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     )
   })
 
+  /**
+    * regist period of one issue by issue id
+    */
   ajaxPost("/:owner/:repository/issues/:issueId/period")(writableUsersOnly { repository =>
     context.withLoginAccount { loginAccount =>
       implicit val session: Session = Database.getSession(context.request)
