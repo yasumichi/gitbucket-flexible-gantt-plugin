@@ -1,6 +1,6 @@
 name := "gitbucket-flexible-gantt-plugin"
 organization := "io.github.gitbucket"
-version := "0.4.2"
+version := "0.5.0"
 scalaVersion := "2.13.16"
 gitbucketVersion := "4.36.2"
 
