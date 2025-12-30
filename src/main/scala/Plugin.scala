@@ -28,7 +28,8 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     new Version("0.1.1"),
     new Version("0.2.0"),
     new Version("0.3.0"),
-    new Version("0.4.0")
+    new Version("0.4.0"),
+    new Version("0.4.1")
   )
 
   override val controllers = Seq(
