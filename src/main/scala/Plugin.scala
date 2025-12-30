@@ -1,23 +1,32 @@
+// use twirl template
+import flexiblegantt.html
+
+// gitbucket core modules
 import gitbucket.core.controller.Context
+import gitbucket.core.model.Account
+import gitbucket.core.model.Issue
+import gitbucket.core.model.Session
+import gitbucket.core.model.{Session => _}
 import gitbucket.core.plugin.Link
+import gitbucket.core.plugin.PluginRegistry
+import gitbucket.core.service.AccountService
 import gitbucket.core.service.RepositoryService
 import gitbucket.core.service.RepositoryService.RepositoryInfo
+import gitbucket.core.service.SystemSettingsService
+import gitbucket.core.servlet.Database
+import gitbucket.core.settings.html.options
+
+// use solidbase
 import io.github.gitbucket.solidbase.migration.LiquibaseMigration
 import io.github.gitbucket.solidbase.model.Version
+
+// reffer FlexibleGanttController
 import io.github.yasumichi.gfg.controller.FlexibleGanttController
-import gitbucket.core.model.Issue
-import play.twirl.api.Html
-import flexiblegantt.html
-import gitbucket.core.service.AccountService
-import gitbucket.core.settings.html.options
-import gitbucket.core.model.Account
-import gitbucket.core.model.{Session => _}
-import gitbucket.core.model.Session
-import gitbucket.core.servlet.Database
-import scala.collection.mutable
-import gitbucket.core.plugin.PluginRegistry
-import gitbucket.core.service.SystemSettingsService
+
+// other utilities
 import javax.servlet.ServletContext
+import play.twirl.api.Html
+import scala.collection.mutable
 
 /**
   * Flexible Gantt Plugin
