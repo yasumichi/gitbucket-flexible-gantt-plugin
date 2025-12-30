@@ -1,30 +1,36 @@
 package io.github.yasumichi.gfg.controller
 
+// use twirl templates
 import flexiblegantt.html
+
+// use functions of gitbucket core
 import gitbucket.core.api.ApiError
 import gitbucket.core.controller.ControllerBase
+import gitbucket.core.model.CoreProfile
+import gitbucket.core.model.IssueComponent
+import gitbucket.core.model.Session
 import gitbucket.core.service.IssueCreationService
 import gitbucket.core.service.RepositoryService.RepositoryInfo
 import gitbucket.core.service._
-import gitbucket.core.util.ReferrerAuthenticator
-import gitbucket.core.util.StringUtil._
-import io.github.yasumichi.gfg.service.IssuePeriodService
-import io.github.yasumichi.gfg.model.IssuePeriodComponent
-import gitbucket.core.model.CoreProfile
-import gitbucket.core.util.WritableUsersAuthenticator
-import java.util.Date
-import java.text.SimpleDateFormat
-import gitbucket.core.model.Session
 import gitbucket.core.servlet.Database
 import gitbucket.core.util.AdminAuthenticator
-import org.scalatra.forms._
-
-import org.slf4j.LoggerFactory
 import gitbucket.core.util.ReadableUsersAuthenticator
-import gitbucket.core.model.IssueComponent
-import org.scalatra.forms.MappingValueType
+import gitbucket.core.util.ReferrerAuthenticator
+import gitbucket.core.util.StringUtil._
+import gitbucket.core.util.WritableUsersAuthenticator
+
+// use functions of Flexible Gantt
+import io.github.yasumichi.gfg.model.IssuePeriodComponent
 import io.github.yasumichi.gfg.service.GanttSettingsService
 import io.github.yasumichi.gfg.service.GanttSettingsService._
+import io.github.yasumichi.gfg.service.IssuePeriodService
+
+// other utilities
+import java.text.SimpleDateFormat
+import java.util.Date
+import org.scalatra.forms.MappingValueType
+import org.scalatra.forms._
+import org.slf4j.LoggerFactory
 
 class FlexibleGanttController
     extends FlexibleGanttControllerBase
