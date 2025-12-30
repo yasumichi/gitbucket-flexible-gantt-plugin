@@ -1,11 +1,19 @@
 package io.github.yasumichi.gfg.model
 
+/**
+  * trait for issue additional infomation
+  */
 trait IssuePeriodComponent { self: gitbucket.core.model.Profile =>
   import profile.api._
   import self._
 
   lazy val IssuePeriods = TableQuery[IssuePeriods]
 
+  /**
+    * Database table ISSUE_PERIOD and corresponding class
+    *
+    * @param tag table name
+    */
   class IssuePeriods(tag: Tag) extends Table[IssuePeriod](tag, "ISSUE_PERIOD") {
     val userName = column[String]("USER_NAME")
     val repositoryName = column[String]("REPOSITORY_NAME")
@@ -26,6 +34,17 @@ trait IssuePeriodComponent { self: gitbucket.core.model.Profile =>
   }
 }
 
+/**
+  * Case classes corresponding to records in the database table ISSUE_PERIOD
+  *
+  * @param userName repository owner
+  * @param repositoryName repository name
+  * @param issueId issue id
+  * @param startDate start date of issue
+  * @param endDate end date of issue
+  * @param progress progress of issue
+  * @param dependencies dependencies of issue
+  */
 case class IssuePeriod(
     userName: String,
     repositoryName: String,
