@@ -40,7 +40,17 @@ If you do not have editing permissions, the pencil icon will not be displayed.
 - Clicking on a task will open the corresponding issue.
 - You can filter by milestones and labels.
 
-<img width="1920" height="945" alt="localhost_8080_gitbucket_yasumichi_ForEnglishUser_flexible-gantt" src="https://github.com/user-attachments/assets/1e5328de-fab2-46de-8ac3-1c2bfd801d89" />
+<img width="1920" height="945" alt="Flexible Gantt" src="https://github.com/user-attachments/assets/f4c5a7e4-d2a8-4338-862d-3d3c0e855c1c" />
+
+## Gantt chart locale settings
+
+You can now set the locale for the Gantt chart.
+
+<img width="789" height="313" alt="image" src="https://github.com/user-attachments/assets/bc0206ac-5702-4aca-94e0-05cf4c0aee17" />
+
+The month will be displayed according to your settings.
+
+<img width="915" height="310" alt="image" src="https://github.com/user-attachments/assets/566672e3-6bc9-4d7e-a651-163895aff212" />
 
 ## ToDo
 
