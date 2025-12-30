@@ -1,36 +1,43 @@
 package io.github.yasumichi.gfg.service
 
-import io.github.yasumichi.gfg.model.IssuePeriod
-import io.github.yasumichi.gfg.model.Profile._
-import io.github.yasumichi.gfg.model.Profile.profile.blockingApi._
-import java.util.Date
-import java.util.Calendar
+// use functions of gitbucket core
 import gitbucket.core.issues.html.issue
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import scala.jdk.CollectionConverters._
-import gitbucket.core.service.AccountService
-import gitbucket.core.service.RepositoryService
-import gitbucket.core.service.LabelsService
-import gitbucket.core.service.PrioritiesService
-import gitbucket.core.service.MilestonesService
+import gitbucket.core.model.CoreProfile
 import gitbucket.core.model.IssueComponent
+import gitbucket.core.service.AccountService
 import gitbucket.core.service.ActivityService
 import gitbucket.core.service.CommitsService
 import gitbucket.core.service.IssueCreationService
 import gitbucket.core.service.IssuesService
+import gitbucket.core.service.LabelsService
 import gitbucket.core.service.MergeService
+import gitbucket.core.service.MilestonesService
+import gitbucket.core.service.PrioritiesService
 import gitbucket.core.service.PullRequestService
-import gitbucket.core.util.ReadableUsersAuthenticator
-import gitbucket.core.util.ReferrerAuthenticator
+import gitbucket.core.service.RepositoryService
 import gitbucket.core.service.RequestCache
 import gitbucket.core.service.WebHookIssueCommentService
 import gitbucket.core.service.WebHookPullRequestReviewCommentService
 import gitbucket.core.service.WebHookPullRequestService
 import gitbucket.core.service.WebHookService
+import gitbucket.core.util.ReadableUsersAuthenticator
+import gitbucket.core.util.ReferrerAuthenticator
 import gitbucket.core.util.WritableUsersAuthenticator
-import gitbucket.core.model.CoreProfile
 
+// use self models of Flexible Gantt
+import io.github.yasumichi.gfg.model.IssuePeriod
+import io.github.yasumichi.gfg.model.Profile._
+import io.github.yasumichi.gfg.model.Profile.profile.blockingApi._
+
+// other utilities
+import java.util.Calendar
+import java.util.Date
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.jdk.CollectionConverters._
+
+/**
+  * trait for database access to ISSUE_PERIOD and relative tables
+  */
 trait IssuePeriodService {
   self: CoreProfile
     with AccountService
@@ -56,6 +63,15 @@ trait IssuePeriodService {
   import gitbucket.core.service.IssuesService._
   import self.profile.api
 
+  /**
+    * get one issue by issue id
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param issueId issue id
+    * @param session session of database
+    * @return period of target issue
+    */
   def getIssuePeriod(
       userName: String,
       repositoryName: String,
@@ -66,6 +82,14 @@ trait IssuePeriodService {
       .list
   }
 
+  /**
+    * get issues has periods
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param session session of database 
+    * @return issues has periods
+    */
   def getIssuePeriods(
       userName: String,
       repositoryName: String
@@ -79,6 +103,15 @@ trait IssuePeriodService {
       .list
   }
 
+  /**
+    * get issues has periods filtered by milestone id
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param milestoneId milestone id
+    * @param session session of database
+    * @return issues has periods filtered by milestone id
+    */
   def getIssuePeriodsByMilestone(
       userName: String,
       repositoryName: String,
@@ -93,6 +126,15 @@ trait IssuePeriodService {
       .list
   }
 
+  /**
+    * get issues has periods filtered by label name
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param labelName label name
+    * @param session session of database
+    * @return issues has periods filtered by label name 
+    */
   def getIssuePeriodsByLabel(
       userName: String,
       repositoryName: String,
@@ -115,6 +157,19 @@ trait IssuePeriodService {
       .list
   }
 
+  /**
+    * insert or update period of one issue to database table ISSUE_PERIOD
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param issueId issue id
+    * @param startDate start date of issue
+    * @param endDate end date of issue
+    * @param progress progress of issue
+    * @param dependencies dependencies of issue
+    * @param session session of database
+    * @return count of record
+    */
   def insertIssuePeriod(
       userName: String,
       repositoryName: String,
