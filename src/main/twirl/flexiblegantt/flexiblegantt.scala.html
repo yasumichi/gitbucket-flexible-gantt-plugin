@@ -2,7 +2,8 @@
     repository: gitbucket.core.service.RepositoryService.RepositoryInfo,
     milestoneId: Int,
     labelName: String,
-    isManageable: Boolean
+    isManageable: Boolean,
+    ganttLocale: String
 )(implicit context: gitbucket.core.controller.Context)
 @import context._
 @import gitbucket.core.html.main
@@ -227,7 +228,7 @@
                         popup_on: 'hover',
                         readonly: readonly,
                         view_mode_select: true,
-                        language: 'en'
+                        language: '@ganttLocale'
                     })
                 });
             }

@@ -60,6 +60,9 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     Some(Link("flexible-gantt", "Flexible Gantt", "/flexible-gantt", Some("dashboard")))
   )
 
+  override val systemSettingMenus: Seq[(Context) => Option[Link]] =
+    Seq((ctx: Context) => Some(Link("Flexible Gantt", "Flexible Gantt", "admin/flexible-gantt")))
+
   override val issueSidebars: Seq[(Issue, RepositoryInfo, Context) => Option[Html]] =
     Seq((issue: Issue, repository: RepositoryInfo, context: Context) => {
       implicit val session: Session = Database.getSession(context.request)

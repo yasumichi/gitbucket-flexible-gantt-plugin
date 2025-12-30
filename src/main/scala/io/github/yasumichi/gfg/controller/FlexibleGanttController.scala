@@ -16,14 +16,21 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import gitbucket.core.model.Session
 import gitbucket.core.servlet.Database
+import gitbucket.core.util.AdminAuthenticator
+import org.scalatra.forms._
 
 import org.slf4j.LoggerFactory
 import gitbucket.core.util.ReadableUsersAuthenticator
 import gitbucket.core.model.IssueComponent
+import org.scalatra.forms.MappingValueType
+import io.github.yasumichi.gfg.service.GanttSettingsService
+import io.github.yasumichi.gfg.service.GanttSettingsService._
 
 class FlexibleGanttController
     extends FlexibleGanttControllerBase
+    with GanttSettingsService
     with AccountService
+    with AdminAuthenticator
     with ActivityService
     with CommitsService
     with CoreProfile
@@ -49,8 +56,10 @@ class FlexibleGanttController
 trait FlexibleGanttControllerBase extends ControllerBase {
 
   self: IssuePeriodService
+    with GanttSettingsService
     with IssueComponent
     with AccountService
+    with AdminAuthenticator
     with ActivityService
     with CommitsService
     with IssueCreationService
@@ -72,11 +81,27 @@ trait FlexibleGanttControllerBase extends ControllerBase {
 
   private val logger = LoggerFactory.getLogger(classOf[FlexibleGanttController])
 
+  val settingsForm: MappingValueType[GanttSettings] = mapping(
+    "ganttLocale" -> text(required, maxlength(200))
+  )(GanttSettings.apply)
+
+  get("/admin/flexible-gantt")(adminOnly {
+    val settings = loadGanttSettings()
+    html.settings(settings.ganttLocale, None)
+  })
+
+  post("/admin/flexible-gantt", settingsForm)(adminOnly { form =>
+    assert(form.ganttLocale != null)
+    saveGanttSettings(form)
+    html.settings(form.ganttLocale, Some("Settings Saved"))
+  })
+
   get("/:owner/:repository/flexible-gantt") {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, 0, "", isIssueManageable(repository))
+        val settings = loadGanttSettings()
+        html.flexiblegantt(repository, 0, "", isIssueManageable(repository), settings.ganttLocale)
       }
     }
   }
@@ -85,7 +110,14 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, params("milestoneId").toInt, "", isIssueManageable(repository))
+        val settings = loadGanttSettings()
+        html.flexiblegantt(
+          repository,
+          params("milestoneId").toInt,
+          "",
+          isIssueManageable(repository),
+          settings.ganttLocale
+        )
       }
     }
   }
@@ -94,7 +126,8 @@ trait FlexibleGanttControllerBase extends ControllerBase {
     referrersOnly { repository: RepositoryInfo =>
       {
         implicit val session: Session = Database.getSession(context.request)
-        html.flexiblegantt(repository, 0, params("labelName"), isIssueManageable(repository))
+        val settings = loadGanttSettings()
+        html.flexiblegantt(repository, 0, params("labelName"), isIssueManageable(repository), settings.ganttLocale)
       }
     }
   }
