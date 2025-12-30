@@ -1,10 +1,10 @@
 package io.github.yasumichi.gfg.service
 
-import java.io.File
-import scala.util.Using
+import GanttSettingsService._
 import gitbucket.core.util.Directory._
 import gitbucket.core.util.SyntaxSugars._
-import GanttSettingsService._
+import java.io.File
+import scala.util.Using
 
 trait GanttSettingsService {
 
