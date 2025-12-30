@@ -13,6 +13,7 @@
 @import gitbucket.core.util.Directory._
 @gitbucket.core.html.main("Flexible Gantt", Some(repository)) {
     @gitbucket.core.html.menu("gantt", repository) {
+        <!-- filtering menu and new issue button -->
         <div id="gfg-menu" style="display: flex;">
             <nav class="navbar navbar-default" style="width: calc(100% - 90px); z-index: 950;">
                 <div class="navbar-header">
@@ -45,10 +46,16 @@
             </nav>
             <div class="pull-right"><a class="btn btn-success" href="@context.baseUrl/@repository.owner/@repository.name/issues/new" style="margin-top: 6px;">New issue</a></div>
         </div>
+
+        <!-- notify area -->
         <div id="gfg-msg" class="alert"></div>
+
+        <!-- for gantt char area -->
         <div class="container">
             <svg id="gantt" width="90%" height="90%"></svg>
         </div>
+
+        <!-- scripts for gantt chart -->
         @if(isManageable) {
             <script>var readonly = false;</script>
         } else {
