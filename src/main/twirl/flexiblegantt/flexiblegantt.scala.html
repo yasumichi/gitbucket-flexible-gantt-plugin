@@ -155,6 +155,13 @@
             };
 
             function init() {
+                document.querySelectorAll('.menu-item-hover').forEach((node, index) => {
+                    node.classList.remove('active');
+                    if (node.querySelector('span').textContent.trim() === 'Flexible Gantt') {
+                        node.classList.add('active');
+                    }
+                });
+
                 setMilestones();
                 setLabels();
                 fetch(taskUrl)
