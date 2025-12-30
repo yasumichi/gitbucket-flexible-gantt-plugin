@@ -45,12 +45,26 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     new Version("0.4.2")
   )
 
+  /**
+    * add controller
+    */
   override val controllers = Seq(
     "/*" -> new FlexibleGanttController()
   )
 
+  /**
+    * assset mappings
+    */
   override val assetsMappings = Seq("/flexible-gantt" -> "/flexible-gantt/assets")
 
+  /**
+    * inject css and JavaScript to Flexible Gantt
+    *
+    * @param registry refference to PluginRegistry
+    * @param context Servlet Context
+    * @param settings System Settings
+    * @return css and JavaScript
+    */
   override def javaScripts(
       registry: PluginRegistry,
       context: ServletContext,
@@ -71,13 +85,22 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     )
   }
 
+  /**
+    * add repository menu of Flexible Gantt
+    */
   override val repositoryMenus = Seq((repositoryInfo: RepositoryInfo, context: Context) =>
     Some(Link("flexible-gantt", "Flexible Gantt", "/flexible-gantt", Some("dashboard")))
   )
 
+  /**
+    * add system settings menu of Flexible Gantt
+    */
   override val systemSettingMenus: Seq[(Context) => Option[Link]] =
     Seq((ctx: Context) => Some(Link("Flexible Gantt", "Flexible Gantt", "admin/flexible-gantt")))
 
+  /**
+    * add Flexible Gantt sidebar to issues
+    */
   override val issueSidebars: Seq[(Issue, RepositoryInfo, Context) => Option[Html]] =
     Seq((issue: Issue, repository: RepositoryInfo, context: Context) => {
       implicit val session: Session = Database.getSession(context.request)
