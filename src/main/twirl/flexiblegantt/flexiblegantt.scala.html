@@ -161,14 +161,16 @@
                 });
             };
 
-            function init() {
+            const activateRepositoryMenu = function () {
                 document.querySelectorAll('.menu-item-hover').forEach((node, index) => {
                     node.classList.remove('active');
                     if (node.querySelector('span').textContent.trim() === 'Flexible Gantt') {
                         node.classList.add('active');
                     }
                 });
+            };
 
+            function init() {
                 setMilestones();
                 setLabels();
                 fetch(taskUrl)
@@ -248,6 +250,7 @@
             }
 
             document.addEventListener("DOMContentLoaded", function() {
+                activateRepositoryMenu();
                 init();
             }, false);
         </script>
