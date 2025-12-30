@@ -23,5 +23,13 @@
         <input type="submit" class="btn btn-success" value="Apply changes"/>
     </fieldset>
 </form>
+<script type="text/javascript">
+    document.querySelectorAll('.menu-item-hover').forEach((node, index) => {
+        node.classList.remove('active');
+        if (node.querySelector('span').textContent.trim() === 'Flexible Gantt') {
+            node.classList.add('active');
+        }
+    });
+</script>
 }
 }
