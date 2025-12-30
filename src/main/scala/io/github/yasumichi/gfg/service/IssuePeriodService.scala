@@ -98,7 +98,13 @@ trait IssuePeriodService {
       repositoryName: String,
       labelName: String
   )(implicit session: Session): List[(gitbucket.core.model.Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
-    val issueIds: Query[Rep[Int], Int, Seq] = Labels.filter(_.byLabel(userName, repositoryName, labelName)).join(IssueLabels).on {case (t1: Labels, t2: IssueLabels) => t1.labelId === t2.labelId && t1.userName === t2.userName && t1.repositoryName === t2.repositoryName}.map{case (t1: Labels, t2: IssueLabels) => t2.issueId}
+    val issueIds: Query[Rep[Int], Int, Seq] = Labels
+      .filter(_.byLabel(userName, repositoryName, labelName))
+      .join(IssueLabels)
+      .on { case (t1: Labels, t2: IssueLabels) =>
+        t1.labelId === t2.labelId && t1.userName === t2.userName && t1.repositoryName === t2.repositoryName
+      }
+      .map { case (t1: Labels, t2: IssueLabels) => t2.issueId }
     Issues
       .filter(_.byRepository(userName, repositoryName))
       .filter(_.issueId in issueIds)
