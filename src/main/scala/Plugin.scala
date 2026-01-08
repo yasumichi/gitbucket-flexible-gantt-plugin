@@ -90,14 +90,14 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     * add repository menu of Flexible Gantt
     */
   override val repositoryMenus = Seq((repositoryInfo: RepositoryInfo, context: Context) =>
-    Some(Link("flexible-gantt", "Flexible Gantt", "/flexible-gantt", Some("dashboard")))
+    Some(Link("Flexible-Gantt", "Flexible Gantt", "/flexible-gantt", Some("dashboard")))
   )
 
   /**
     * add system settings menu of Flexible Gantt
     */
   override val systemSettingMenus: Seq[(Context) => Option[Link]] =
-    Seq((ctx: Context) => Some(Link("Flexible Gantt", "Flexible Gantt", "admin/flexible-gantt")))
+    Seq((ctx: Context) => Some(Link("Flexible-Gantt", "Flexible Gantt", "admin/flexible-gantt")))
 
   /**
     * add Flexible Gantt sidebar to issues

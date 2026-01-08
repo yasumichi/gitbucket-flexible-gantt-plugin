@@ -12,7 +12,7 @@
 @import gitbucket.core.view.helpers._
 @import gitbucket.core.util.Directory._
 @gitbucket.core.html.main("Flexible Gantt", Some(repository)) {
-    @gitbucket.core.html.menu("gantt", repository) {
+    @gitbucket.core.html.menu("Flexible-Gantt", repository) {
         <!-- filtering menu and new issue button -->
         <div id="gfg-menu" style="display: flex;">
             <nav class="navbar navbar-default" style="width: calc(100% - 90px); z-index: 950;">
@@ -161,15 +161,6 @@
                 });
             };
 
-            const activateRepositoryMenu = function () {
-                document.querySelectorAll('.menu-item-hover').forEach((node, index) => {
-                    node.classList.remove('active');
-                    if (node.querySelector('span').textContent.trim() === 'Flexible Gantt') {
-                        node.classList.add('active');
-                    }
-                });
-            };
-
             function init() {
                 setMilestones();
                 setLabels();
@@ -250,7 +241,6 @@
             }
 
             document.addEventListener("DOMContentLoaded", function() {
-                activateRepositoryMenu();
                 init();
             }, false);
         </script>
