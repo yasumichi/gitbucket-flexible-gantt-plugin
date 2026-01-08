@@ -3,6 +3,7 @@ package io.github.yasumichi.gfg.service
 // use functions of gitbucket core
 import gitbucket.core.issues.html.issue
 import gitbucket.core.model.CoreProfile
+import gitbucket.core.model.Issue
 import gitbucket.core.model.IssueComponent
 import gitbucket.core.service.AccountService
 import gitbucket.core.service.ActivityService
@@ -64,6 +65,21 @@ trait IssuePeriodService {
   import self.profile.api
 
   /**
+    * get open issues
+    *
+    * @param userName repository owner
+    * @param repositoryName repository name
+    * @param session session of database
+    * @return open issues
+    */
+  def getIssues(
+      userName: String,
+      repositoryName: String
+  )(implicit session: Session): List[Issue] = {
+    Issues.filter(_.byRepository(userName, repositoryName)).filter(_.closed === false).list
+  }
+
+  /**
     * get one issue by issue id
     *
     * @param userName repository owner
@@ -94,7 +110,7 @@ trait IssuePeriodService {
   def getIssuePeriods(
       userName: String,
       repositoryName: String
-  )(implicit session: Session): List[(gitbucket.core.model.Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
+  )(implicit session: Session): List[(Issue, io.github.yasumichi.gfg.model.IssuePeriod)] = {
     Issues
       .filter(_.byRepository(userName, repositoryName))
       .filter(_.closed === false)

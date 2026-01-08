@@ -31,6 +31,9 @@ import java.util.Date
 import org.scalatra.forms.MappingValueType
 import org.scalatra.forms._
 import org.slf4j.LoggerFactory
+import org.json4s.DefaultFormats
+
+case class IssueBasic(number: Int, title: String)
 
 /**
   * Controller of Flexible Gantt
@@ -159,6 +162,18 @@ trait FlexibleGanttControllerBase extends ControllerBase {
       }
     }
   }
+
+  /**
+    * return list of issues (JSON)
+    */
+  ajaxGet("/:owner/:repository/flexible-gantt/issueBasics")(readableUsersOnly { repository =>
+    implicit val session: Session = Database.getSession(context.request)
+    implicit val formats = DefaultFormats
+    val issueList = getIssues(repository.owner, repository.name).map { t => IssueBasic( t.issueId, t.title) }
+    org.json4s.jackson.Serialization.write(
+      issueList
+    )
+  })
 
   /**
     * return list of issues has period (JSON)

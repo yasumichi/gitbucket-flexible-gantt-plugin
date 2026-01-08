@@ -185,38 +185,37 @@
     };
 
     const getIssues = function() {
-        const issueUrl = "@context.path/api/v3/repos/@owner/@repositoryName/issues";
+        const issueUrl = "@context.path/@owner/@repositoryName/flexible-gantt/issueBasics";
         fetch(issueUrl)
         .then((res) =>{
             if(res.ok) {
                 return res.json();
             } else {
-                console.log(res);
+                throw new Error("failure to get issues");
             }
         })
         .then(data => {
             var currentIssue = parseInt("@issueId");
+            console.log(data);
             data
             .filter((value, index) => {
                 return value.number != currentIssue;
             })
             .sort((a, b) => a.number -b.number)
             .forEach((issue, index) => {
-                if (issue.state === "open") {
-                    var panel = document.createElement("div");
-                    panel.classList.add("panel","panel-primary");
-                    var panelBody = document.createElement("div");
-                    panelBody.classList.add("panel-body");
-                    var checkbox = document.createElement("input");
-                    checkbox.setAttribute("type", "checkbox");
-                    checkbox.setAttribute("data-id", issue.number);
-                    panelBody.appendChild(checkbox);
-                    var span = document.createElement("span");
-                    span.textContent = `#${issue.number} ${issue.title}`;
-                    panelBody.appendChild(span);
-                    panel.appendChild(panelBody);
-                    issueListBody.appendChild(panel);
-                }
+                var panel = document.createElement("div");
+                panel.classList.add("panel","panel-primary");
+                var panelBody = document.createElement("div");
+                panelBody.classList.add("panel-body");
+                var checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                checkbox.setAttribute("data-id", issue.number);
+                panelBody.appendChild(checkbox);
+                var span = document.createElement("span");
+                span.textContent = `#${issue.number} ${issue.title}`;
+                panelBody.appendChild(span);
+                panel.appendChild(panelBody);
+                issueListBody.appendChild(panel);
             });
         })
     };
