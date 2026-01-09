@@ -44,7 +44,8 @@ class Plugin extends gitbucket.core.plugin.Plugin with AccountService with Repos
     new Version("0.4.1"),
     new Version("0.4.2"),
     new Version("0.5.0"),
-    new Version("0.5.1")
+    new Version("0.5.1"),
+    new Version("0.5.2")
   )
 
   /**
