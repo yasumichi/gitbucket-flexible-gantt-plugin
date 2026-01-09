@@ -280,11 +280,12 @@
             body: params
         }
         fetch(action, options)
-        .then((res) => {
+        .then(async(res) => {
             if(res.ok) {
                 return res.json();
             } else {
-                throw new Error("Registration failure");
+                var data = await res.json();
+                throw new Error(data.message);
             }
         })
         .then(data => {
