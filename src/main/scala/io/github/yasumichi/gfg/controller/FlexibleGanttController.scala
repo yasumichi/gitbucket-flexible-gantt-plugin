@@ -32,6 +32,7 @@ import org.scalatra.forms.MappingValueType
 import org.scalatra.forms._
 import org.slf4j.LoggerFactory
 import org.json4s.DefaultFormats
+import org.scalatra.BadRequest
 
 case class IssueBasic(number: Int, title: String)
 
@@ -279,16 +280,17 @@ trait FlexibleGanttControllerBase extends ControllerBase {
       val progress = params("progress")
       val dependencies = params("dependencies")
 
-      logger.info("params get")
+      if (startDate.after(endDate)) {
+        BadRequest("The end date is earlier than the start date.")
+      } else {
+        insertIssuePeriod(userName, repositoryName, issueId.toInt, startDate, endDate, progress.toInt, dependencies)
 
-      logger.info("upsertIssuePeriod call")
-      insertIssuePeriod(userName, repositoryName, issueId.toInt, startDate, endDate, progress.toInt, dependencies)
-
-      org.json4s.jackson.Serialization.write(
-        Map(
-          "message" -> s"updated issue#${issueId} period"
+        org.json4s.jackson.Serialization.write(
+          Map(
+            "message" -> s"updated issue#${issueId} period"
+          )
         )
-      )
+      }
     }
   })
 }
