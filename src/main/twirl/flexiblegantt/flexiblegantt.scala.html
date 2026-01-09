@@ -30,6 +30,7 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu" id="milestones">
+                                <li><input id="filterMilestonesInput" type="text" placeholder="Find Milestone..." class="form-control input-sm dropdown-filter-input"></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -79,6 +80,10 @@
             const postSuffix = "/period";
             const filterInfo = document.querySelector("#filterInfo");
             const pathElems = location.pathname.split('/');
+            const milestones = document.querySelector("#milestones");
+            const filterMilestonesInput = document.querySelector("#filterMilestonesInput")
+
+            milestones.style.maxHeight = `${document.querySelector(".content-wrapper").clientHeight * 0.7}px`
 
             const setSuccess = function (message) {
                 const gfgmsg = document.querySelector("#gfg-msg");
@@ -104,7 +109,6 @@
             };
 
             const setMilestones = function () {
-                const milestones = document.querySelector("#milestones");
                 const apiMilestonesUrl = "@context.baseUrl/api/v3/repos/@repository.owner/@repository.name/milestones";
                 fetch(apiMilestonesUrl)
                 .then(res => {
@@ -120,6 +124,7 @@
                             return elem.id === parseInt(pathElems[pathElems.length - 1]);
                         })[0].title + ")";
                     }
+                    data.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
                     data.forEach((elem, index) => {
                         if (elem.state === "open" && elem.open_issues > 0) {
                             var li = document.createElement("li");
@@ -238,7 +243,24 @@
                         language: '@ganttLocale'
                     })
                 });
-            }
+            };
+            
+            filterMilestonesInput.addEventListener("input", (e)=> {
+                if (filterMilestonesInput.value === "") {
+                    milestones.querySelectorAll("a").forEach((node, key) => {
+                        node.parentNode.style.display = "block";
+                    });
+                } else {
+                    milestones.querySelectorAll("a").forEach((node, key) => {
+                        console.log(parent);
+                        if (node.textContent.includes(filterMilestonesInput.value)) {
+                            node.parentNode.style.display = "block";
+                        } else {
+                            node.parentNode.style.display = "none";
+                        }
+                    });
+                }
+            }, false);
 
             document.addEventListener("DOMContentLoaded", function() {
                 init();
