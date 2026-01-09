@@ -284,8 +284,8 @@
             if(res.ok) {
                 return res.json();
             } else {
-                var data = await res.json();
-                throw new Error(data.message);
+                var message = await res.text();
+                throw new Error(message);
             }
         })
         .then(data => {
