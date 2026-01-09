@@ -234,6 +234,31 @@
         });
     };
 
+    const validateFormHasError = function() {
+        // Check if the value is not set
+        var hasError = false;
+        if (startDate.value === "") {
+            startDateGroup.classList.add("has-error");
+            hasError = true;
+        }
+        if (endDate.value === "") {
+            endDateGroup.classList.add("has-error");
+            hasError = true;
+        }
+        if (hasError) {
+            notifyDangerAlert("Required fields are not set.")
+        }
+
+        // Check whether the start and end dates are reversed
+        if ((new Date(startDate.value)) > (new Date(endDate.value))) {
+            endDateGroup.classList.add("has-error");
+            notifyDangerAlert("The end date is earlier than the start date.")
+            hasError = true;
+        }
+
+        return hasError;
+    };
+
     if (editgfg) {
         editgfg.addEventListener('click', (e) => enterEditMode(), false);
         startDate.addEventListener('change', (e) => {
@@ -285,29 +310,13 @@
     }
 
     gfgpost.addEventListener('click', (e) => {
-        const form = document.getElementById("gfgform")
-        const params = new URLSearchParams();
-        // Check if the value is not set
-        var hasError = false;
-        if (startDate.value === "") {
-            startDateGroup.classList.add("has-error");
-            hasError = true;
-        }
-        if (endDate.value === "") {
-            endDateGroup.classList.add("has-error");
-            hasError = true;
-        }
-        if (hasError) {
-            notifyDangerAlert("Required fields are not set.")
+        // Check for errors before registering
+        if (validateFormHasError()) {
             return;
         }
 
-        // Check whether the start and end dates are reversed
-        if ((new Date(startDate.value)) > (new Date(endDate.value))) {
-            endDateGroup.classList.add("has-error");
-            notifyDangerAlert("The end date is earlier than the start date.")
-            return;
-        }
+        const form = document.getElementById("gfgform")
+        const params = new URLSearchParams();
 
         params.append("startDate", startDate.value)
         params.append("endDate", endDate.value)
