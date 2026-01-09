@@ -135,6 +135,12 @@
         })
     };
 
+    const notifyDangerAlert = function(message) {
+        gfgmsg.className = "alert alert-danger";
+        gfgmsg.setAttribute('role', 'alert');
+        gfgmsg.textContent = message;
+    };
+
     const clearAlert = function () {
         gfgmsg.className = "alert";
         gfgmsg.setAttribute('role', 'alert');
@@ -304,9 +310,7 @@
             cancelEditMode();
         })
         .catch(e =>{
-            gfgmsg.className = "alert alert-danger";
-            gfgmsg.setAttribute('role', 'alert');
-            gfgmsg.textContent = e.message;
+            notifyDangerAlert(e.message);
         });
     });
 
