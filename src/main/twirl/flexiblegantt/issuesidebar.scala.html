@@ -22,14 +22,14 @@
     </div>
     <div class="panel-body">
         <form method="post" id="gfgform" action="@context.path/@owner/@repositoryName/issues/@issueId/period">
-            <div style="margin-bottom: 14px;">
+            <div id="startDateGroup" style="margin-bottom: 14px;" class="form-group">
                 <span class="muted small strong">Start</span>
                 <div class="pull-right">
                     <input type="date" name="startDate" class="form-control input-sm custom-field-editor" value="" style="display: none;">
                     <span id="startDateText">Not Set</span>
                 </div>
             </div>
-            <div style="margin-bottom: 14px;">
+            <div id="endDateGroup" style="margin-bottom: 14px;" class="form-group">
                 <span class="muted small strong">End</span>
                 <div class="pull-right">
                     <input type="date" name="endDate" class="form-control input-sm custom-field-editor" value="" style="display: none;">
@@ -100,8 +100,10 @@
 </div>
 <script type="text/javascript">
     const editgfg = document.querySelector("#edit-gfg");
+    const startDateGroup = document.getElementById("startDateGroup");
     const startDate = document.querySelector("input[name='startDate']");
     const startDateText = document.querySelector("#startDateText");
+    const endDateGroup = document.getElementById("endDateGroup");
     const endDate = document.querySelector("input[name='endDate']");
     const endDateText = document.querySelector("#endDateText");
     const progress = document.querySelector("select[name='progress']");
@@ -234,6 +236,15 @@
 
     if (editgfg) {
         editgfg.addEventListener('click', (e) => enterEditMode(), false);
+        startDate.addEventListener('change', (e) => {
+            startDateGroup.classList.remove("has-error");
+            if (endDate.value === "") {
+                endDate.value = startDate.value;
+            }
+        }, true);
+        endDate.addEventListener('change', (e) => {
+            endDateGroup.classList.remove("has-error");
+        }, true);
         refIssue.addEventListener('click', (e) => {
             if (dependencies.value.length > 0) {
                 var idList = dependencies.value.split(",");
@@ -276,10 +287,32 @@
     gfgpost.addEventListener('click', (e) => {
         const form = document.getElementById("gfgform")
         const params = new URLSearchParams();
-        params.append("startDate", document.querySelector("input[name='startDate']").value)
-        params.append("endDate", document.querySelector("input[name='endDate']").value)
-        params.append("progress", document.querySelector("select[name='progress']").value)
-        params.append("dependencies", document.querySelector("input[name='dependencies']").value)
+        // Check if the value is not set
+        var hasError = false;
+        if (startDate.value === "") {
+            startDateGroup.classList.add("has-error");
+            hasError = true;
+        }
+        if (endDate.value === "") {
+            endDateGroup.classList.add("has-error");
+            hasError = true;
+        }
+        if (hasError) {
+            notifyDangerAlert("Required fields are not set.")
+            return;
+        }
+
+        // Check whether the start and end dates are reversed
+        if ((new Date(startDate.value)) > (new Date(endDate.value))) {
+            endDateGroup.classList.add("has-error");
+            notifyDangerAlert("The end date is earlier than the start date.")
+            return;
+        }
+
+        params.append("startDate", startDate.value)
+        params.append("endDate", endDate.value)
+        params.append("progress", progress.value)
+        params.append("dependencies", dependencies.value)
         const action = form.getAttribute("action")
         const options = {
             method: 'POST',
